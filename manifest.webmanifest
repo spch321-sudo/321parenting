@@ -1,0 +1,16 @@
+{
+  "name": "321 親子同行",
+  "short_name": "321親子",
+  "description": "陪伴年輕父母，用正向、合乎聖經原則的方式，每天輕鬆教養孩子。",
+  "lang": "zh-Hant",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F1E7",
+  "theme_color": "#5B8A6F",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
