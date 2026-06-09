@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#5B8A6F" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C2420" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="321親子同行">
+<title>321 親子同行</title>
+<style>
+  /* ===== 設計代幣：晨光牧場 ===== */
+  :root{
+    --bg:#F4F1E7;            /* 清晨暖白 */
+    --card:#FCFAF3;          /* 卡片底 */
+    --meadow:#4F8268;        /* 青草地綠（主色）*/
+    --meadow-deep:#3A6450;   /* 深綠 */
+    --meadow-soft:#E4EEE5;   /* 淺綠底 */
+    --honey:#E0A234;         /* 集點星光金 */
+    --honey-soft:#FaeEd2;    /* 淺金底 */
+    --coral:#DE8568;         /* 情緒暖橘 */
+    --coral-soft:#F8E3D9;    /* 淺橘底 */
+    --ink:#2B382F;           /* 深墨綠字 */
+    --muted:#69736C;         /* 次要字（加深以提升對比）*/
+    --line:#E5E0D2;          /* 分隔線 */
+    --shadow:0 6px 22px rgba(58,100,80,.10);
+    --radius:20px;
+    --nav-h:68px;
+    --safe-b:env(safe-area-inset-bottom,0px);
+    --fz-base:17px;
+    --font:"PingFang TC","Microsoft JhengHei","Heiti TC","Noto Sans TC",system-ui,-apple-system,sans-serif;
+    --font-round:"Yuanti TC","Yuanti SC","PingFang TC","Microsoft JhengHei",var(--font);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font);
+    font-size:var(--fz-base);
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior-y:none;
+  }
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+  /* ===== App 外框 ===== */
+  #app{max-width:520px;margin:0 auto;min-height:100vh;position:relative;background:var(--bg);}
+
+  /* ===== 頂部 ===== */
+  header.topbar{
+    position:sticky;top:0;z-index:30;
+    background:linear-gradient(180deg,var(--meadow) 0%,var(--meadow-deep) 100%);
+    color:#fff;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 14px;
+    display:flex;align-items:center;gap:11px;
+    box-shadow:0 2px 14px rgba(58,100,80,.25);
+  }
+  .brand-mark{width:38px;height:38px;flex:0 0 auto;}
+  .brand-txt{display:flex;flex-direction:column;line-height:1.15;}
+  .brand-txt b{font-size:19px;letter-spacing:.5px;}
+  .brand-txt span{font-size:12px;opacity:.85;}
+  .topbar .right{margin-left:auto;display:flex;gap:8px;}
+  .icon-btn{
+    width:40px;height:40px;border-radius:13px;
+    background:rgba(255,255,255,.16);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
+  .icon-btn:active{background:rgba(255,255,255,.30);}
+
+  /* ===== 內容區 ===== */
+  main{padding:18px 16px calc(var(--nav-h) + var(--safe-b) + 24px);}
+  .page{display:none;animation:fade .25s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* ===== 卡片元件 ===== */
+  .card{
+    background:var(--card);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);margin-bottom:15px;
+    border:1px solid rgba(229,224,210,.7);
+  }
+  .verse-card{
+    background:linear-gradient(135deg,#fff 0%,var(--meadow-soft) 100%);
+    border:1px solid var(--meadow-soft);
+  }
+  .verse-card .eyebrow{color:var(--meadow);font-size:13px;font-weight:700;letter-spacing:1px;}
+  .verse-card .verse{font-size:18px;line-height:1.85;margin:8px 0 6px;font-weight:500;}
+  .verse-card .ref{color:var(--muted);font-size:14px;}
+
+  .page-title{font-size:22px;font-weight:800;letter-spacing:.5px;margin:2px 0 4px;}
+  .page-sub{color:var(--muted);font-size:14px;margin:0 0 16px;}
+
+  /* 預告卡（骨架階段佔位）*/
+  .soon{
+    border:1.5px dashed var(--meadow);background:var(--meadow-soft);
+    text-align:center;padding:26px 18px;border-radius:var(--radius);
+    color:var(--meadow-deep);
+  }
+  .soon .emoji{font-size:34px;display:block;margin-bottom:8px;}
+  .soon b{font-size:18px;}
+  .soon p{color:var(--muted);font-size:14px;margin:8px 0 0;}
+  .pill{display:inline-block;background:var(--honey-soft);color:#9a6a12;
+    font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;margin-top:12px;}
+
+  .feature-list{list-style:none;padding:0;margin:14px 0 0;text-align:left;}
+  .feature-list li{padding:9px 0 9px 28px;position:relative;font-size:15px;border-top:1px solid var(--line);}
+  .feature-list li:first-child{border-top:none;}
+  .feature-list li::before{content:"✦";position:absolute;left:4px;color:var(--honey);}
+
+  /* ===== 底部導覽 ===== */
+  nav.tabbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    height:calc(var(--nav-h) + var(--safe-b));
+    padding-bottom:var(--safe-b);
+    max-width:520px;margin:0 auto;
+    background:rgba(252,250,243,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    display:flex;
+  }
+  .tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;color:var(--muted);font-size:11px;font-weight:600;
+    transition:color .15s;padding-top:6px;
+  }
+  .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .15s;}
+  .tab.active{color:var(--meadow);}
+  .tab.active svg{transform:translateY(-1px) scale(1.06);}
+  .tab.active .dot{opacity:1;}
+  .tab .dot{width:5px;height:5px;border-radius:50%;background:var(--meadow);opacity:0;margin-top:1px;}
+
+  /* ===== 設定頁 ===== */
+  .row{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--line);}
+  .row:first-child{border-top:none;}
+  .row label{flex:1;font-weight:600;}
+  .row .hint{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:2px;}
+  input[type=text]{
+    border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;
+    font-size:16px;font-family:inherit;color:var(--ink);background:#fff;width:150px;text-align:right;
+  }
+  input[type=text]:focus{outline:none;border-color:var(--meadow);}
+  .btn{
+    background:var(--meadow);color:#fff;border-radius:14px;padding:13px 18px;
+    font-size:16px;font-weight:700;width:100%;transition:transform .1s,background .15s;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn.ghost{background:var(--meadow-soft);color:var(--meadow-deep);}
+  .btn.warn{background:var(--coral-soft);color:#a8512f;}
+  .btn-row{display:flex;gap:10px;margin-top:6px;}
+  .btn-row .btn{width:auto;flex:1;}
+
+  /* ===== 孩子模式 ===== */
+  body.kids{--bg:#FFF8EC;}
+  #kids-view{display:none;min-height:100vh;flex-direction:column;
+    background:linear-gradient(180deg,#FFF3DA 0%,#E9F3E6 100%);}
+  body.kids #app{display:none;}
+  body.kids #kids-view{display:flex;}
+  .kids-top{padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 6px;text-align:center;}
+  .kids-top h2{font-family:var(--font-round);font-size:26px;margin:0;color:var(--meadow-deep);}
+  .kids-top p{color:#b07d2e;margin:4px 0 0;font-size:15px;}
+  .kids-grid{flex:1;display:flex;flex-direction:column;gap:16px;padding:18px 20px;justify-content:center;}
+  .kids-btn{
+    border-radius:26px;padding:30px 22px;font-family:var(--font-round);
+    font-size:25px;font-weight:700;color:#fff;text-align:left;
+    display:flex;align-items:center;gap:16px;box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:transform .12s;
+  }
+  .kids-btn:active{transform:scale(.97);}
+  .kids-btn .k-emoji{font-size:42px;}
+  .kb-habit{background:linear-gradient(135deg,#E0A234,#C98315);}
+  .kb-mood{background:linear-gradient(135deg,#DE8568,#C9694A);}
+  .kb-album{background:linear-gradient(135deg,#4F8268,#3A6450);}
+  .kids-exit{margin:0 20px calc(20px + var(--safe-b));padding:15px;border-radius:18px;
+    background:rgba(255,255,255,.7);color:var(--meadow-deep);font-weight:700;font-size:16px;}
+
+  /* ===== 彈窗（設定 / 提示）===== */
+  .sheet-mask{position:fixed;inset:0;background:rgba(43,56,47,.45);z-index:50;display:none;align-items:flex-end;justify-content:center;}
+  .sheet-mask.open{display:flex;}
+  .sheet{background:var(--bg);width:100%;max-width:520px;border-radius:24px 24px 0 0;
+    padding:22px 18px calc(22px + var(--safe-b));max-height:85vh;overflow:auto;animation:up .25s ease;}
+  @keyframes up{from{transform:translateY(100%);}to{transform:none;}}
+  .sheet h3{margin:0 0 4px;font-size:20px;}
+  .sheet .close{position:absolute;}
+  .toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 28px);transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+    z-index:80;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;}
+  .toast.show{opacity:.96;}
+
+  /* ===== 可及性：鍵盤焦點 + 尊重減少動態 ===== */
+  :focus-visible{outline:3px solid var(--honey);outline-offset:2px;border-radius:8px;}
+  .tab:focus-visible,.icon-btn:focus-visible{outline-offset:-3px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
+
+  /* ===== 爸媽今日的操練 ===== */
+  .practice-card{background:linear-gradient(135deg,#fff 0%,var(--honey-soft) 100%);border:1px solid #F0DFB8;}
+  .eyebrow-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .practice-card .eyebrow{color:#9a6a12;font-size:13px;font-weight:700;letter-spacing:1px;}
+  .fruit-tag{margin-left:auto;background:var(--meadow);color:#fff;font-size:12px;font-weight:700;
+    padding:3px 11px;border-radius:999px;}
+  .practice-text{font-size:18px;line-height:1.8;font-weight:500;margin:2px 0 8px;}
+  .practice-note{color:var(--muted);font-size:13.5px;margin:0 0 14px;}
+  .practice-btn.done{background:var(--meadow-soft);color:var(--meadow-deep);}
+  .streak{margin-top:11px;text-align:center;color:var(--meadow-deep);font-size:13.5px;font-weight:600;min-height:1px;}
+
+  /* ===== 孩子模式：長按離開 ===== */
+  .kids-exit{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none;}
+  .hold-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(79,130,104,.30);z-index:0;}
+  .kids-exit.holding .hold-fill{width:100%;transition:width 1.5s linear;}
+  .hold-label{position:relative;z-index:1;}
+
+  /* ===== 首次歡迎設定 ===== */
+  #onboard{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;overflow:auto;
+    background:linear-gradient(180deg,#FFF3DA 0%,#E9F3E6 100%);
+    padding:calc(env(safe-area-inset-top,0px) + 30px) 22px calc(28px + var(--safe-b));}
+  #onboard.open{display:flex;}
+  #onboard .ob-inner{max-width:520px;margin:0 auto;width:100%;}
+  #onboard h2{font-family:var(--font-round);font-size:27px;color:var(--meadow-deep);margin:0 0 6px;text-align:center;}
+  #onboard .ob-lead{text-align:center;color:#8a6a2e;margin:0 0 22px;font-size:15px;line-height:1.7;}
+  #onboard .ob-block{background:rgba(255,255,255,.78);border-radius:18px;padding:16px 16px 18px;margin-bottom:15px;}
+  #onboard .ob-block h4{margin:0 0 11px;font-size:16px;}
+  #onboard input[type=text]{width:100%;text-align:left;}
+  .ob-birth{display:flex;gap:10px;}
+  select{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font-size:16px;
+    font-family:inherit;color:var(--ink);background:#fff;-webkit-appearance:none;appearance:none;}
+  select:focus{outline:none;border-color:var(--meadow);}
+  .ob-chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .ob-chip{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;
+    border-radius:999px;padding:9px 14px;font-size:15px;font-weight:600;color:var(--ink);transition:all .12s;}
+  .ob-chip.on{background:var(--meadow);color:#fff;border-color:var(--meadow);}
+  .ob-hint{color:var(--muted);font-size:13px;margin:8px 0 0;}
+  .ob-priv{text-align:center;color:#8a6a2e;font-size:12.5px;margin:2px 0 16px;line-height:1.6;}
+
+  /* ===== 牧場（招牌：一起長大）===== */
+  .meadow-card{overflow:hidden;padding:0;background:linear-gradient(180deg,#CFE9F6 0%,#E9F4EA 70%);}
+  .meadow-svg{display:block;width:100%;height:auto;}
+  .meadow-svg .hill-back{fill:#B3D7A4;}
+  .meadow-svg .grass{fill:#8FC290;}
+  .meadow-svg .trunk{fill:#9A7456;}
+  .meadow-svg .canopy{fill:#5E9A78;}
+  .meadow-svg .cloud-p{fill:#FFFFFF;}
+  .meadow-svg .sun-core{fill:#FBC94B;}
+  .meadow-svg .sun-ray{stroke:#FAC850;stroke-width:2.4;stroke-linecap:round;}
+  .meadow-svg .eye{fill:#7A6A3A;}
+  .meadow-svg .smile{fill:none;stroke:#7A6A3A;stroke-width:1.8;stroke-linecap:round;}
+  .meadow-svg .lamb-body{fill:#FFFFFF;}
+  .meadow-svg .lamb-leg{fill:#5B7D68;}
+  .meadow-svg .cheek{fill:#F4B4B4;}
+  .meadow-svg .lamb .eye{fill:#5B6B60;}
+  .meadow-svg .lamb .smile{stroke:#5B6B60;}
+  .meadow-svg .bf-wing{fill:#E8967A;}
+  .meadow-svg .bf-wing2{fill:#F4C06E;}
+  .meadow-svg .bf-body{stroke:#6A554A;stroke-width:1.6;stroke-linecap:round;}
+  .meadow-svg .moon{display:none;}
+  .meadow-svg .moon-core{fill:#E6EBF0;}
+  .meadow-svg .moon-crater{fill:#D2D9E2;}
+  .meadow-svg .nightstar{display:none;fill:#F2C75B;}
+  .meadow-cap{padding:11px 16px 14px;font-size:14px;color:var(--meadow-deep);font-weight:600;text-align:center;}
+  .cloud1{animation:drift 26s ease-in-out infinite;}
+  .cloud2{animation:drift 32s ease-in-out infinite reverse;}
+  .sun{transform-box:fill-box;transform-origin:center;animation:sunpulse 6s ease-in-out infinite;}
+  .butterfly{animation:flutter 4.5s ease-in-out infinite;}
+  .lamb{animation:bob 5s ease-in-out infinite;}
+  @keyframes drift{0%,100%{transform:translateX(0);}50%{transform:translateX(10px);}}
+  @keyframes sunpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  @keyframes flutter{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-2px);}}
+
+  /* ===== 好習慣集點 ===== */
+  .habit-head{display:flex;align-items:center;gap:10px;}
+  .link-btn{margin-left:auto;color:var(--meadow);font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;background:var(--meadow-soft);}
+  .habit-progress{color:var(--muted);font-size:14.5px;margin:6px 0 10px;}
+  .habit-progress b{color:var(--meadow-deep);font-size:17px;}
+  .habit-empty{color:var(--muted);font-size:15px;text-align:center;padding:18px 8px;}
+  .habit-row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-top:1px solid var(--line);}
+  .habit-row:first-child{border-top:none;}
+  .habit-emoji{font-size:23px;width:32px;text-align:center;flex:0 0 auto;}
+  .habit-name{flex:1;font-weight:600;font-size:16px;}
+  .habit-row.done .habit-name{color:var(--muted);}
+  .habit-check{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:#fff;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:20px;color:#fff;transition:background .15s,border-color .15s,transform .1s;}
+  .habit-check:active{transform:scale(.92);}
+  .habit-check.on{background:var(--honey);border-color:var(--honey);}
+  .habit-check.pop{animation:starpop .42s ease;}
+  @keyframes starpop{0%{transform:scale(.5);}55%{transform:scale(1.28);}100%{transform:scale(1);}}
+  .habit-week{display:flex;gap:6px;margin-top:15px;}
+  .wk{flex:1;text-align:center;}
+  .wk .wd{font-size:11px;color:var(--muted);margin-bottom:4px;}
+  .wk .wdot{height:28px;border-radius:9px;background:var(--meadow-soft);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--meadow-deep);}
+  .wk .wdot.has{background:var(--honey-soft);color:#9a6a12;}
+  .wk.today .wd{color:var(--meadow);font-weight:800;}
+  .wk.today .wdot{box-shadow:0 0 0 2px var(--meadow) inset;}
+  /* 管理習慣 */
+  .hedit-row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-top:1px solid var(--line);}
+  .hedit-row:first-child{border-top:none;}
+  .hedit-del{margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--coral-soft);color:#a8512f;font-size:15px;font-weight:700;flex:0 0 auto;}
+  .habit-add{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+  .emoji-pick{display:flex;flex-wrap:wrap;gap:8px;}
+  .emoji-opt{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;}
+  .emoji-opt.on{border-color:var(--meadow);background:var(--meadow-soft);transform:scale(1.05);}
+  /* 孩子模式：好習慣 */
+  #kids-habits{display:none;flex:1;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px calc(18px + var(--safe-b));overflow:auto;}
+  body.kids-habits .kids-grid,body.kids-habits .kids-exit{display:none;}
+  body.kids-habits #kids-habits{display:flex;}
+  .kids-back{align-self:flex-start;background:rgba(255,255,255,.7);color:var(--meadow-deep);font-weight:700;font-size:16px;padding:9px 16px;border-radius:14px;}
+  .kids-h2{font-family:var(--font-round);font-size:25px;color:var(--meadow-deep);text-align:center;margin:8px 0 16px;}
+  .k-habit{display:flex;align-items:center;gap:15px;background:#fff;border-radius:22px;padding:17px 20px;margin-bottom:13px;box-shadow:0 4px 14px rgba(0,0,0,.08);width:100%;text-align:left;transition:transform .1s;}
+  .k-habit:active{transform:scale(.98);}
+  .k-habit .ke{font-size:36px;flex:0 0 auto;}
+  .k-habit .kn{flex:1;font-family:var(--font-round);font-size:21px;font-weight:700;color:var(--ink);}
+  .k-star{width:50px;height:50px;border-radius:50%;border:3px solid #E7DFC8;background:#fff;color:#D8CDA8;
+    display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto;transition:all .15s;}
+  .k-habit.done{background:linear-gradient(135deg,#FFF6DE,#FCEEC4);}
+  .k-habit.done .k-star{background:var(--honey);border-color:var(--honey);color:#fff;animation:starpop .42s ease;}
+
+  /* ===== 親子今日任務 ===== */
+  .btn.done{background:var(--meadow-soft);color:var(--meadow-deep);}
+  .task-card{text-align:center;}
+  .task-icon{font-size:46px;line-height:1;margin-bottom:8px;}
+  .task-title{font-size:21px;font-weight:800;margin-bottom:8px;}
+  .task-desc{color:var(--ink);font-size:16px;line-height:1.8;margin:0 auto 16px;max-width:34ch;}
+  #task-shuffle{color:var(--meadow);font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px;background:var(--meadow-soft);margin:8px auto 0;display:inline-block;}
+  .task-note{margin-top:14px;color:var(--muted);font-size:13.5px;line-height:1.65;}
+  .task-stat{text-align:center;color:var(--meadow-deep);font-weight:600;font-size:14.5px;}
+  .task-hearts{text-align:center;font-size:18px;margin-top:8px;line-height:1.7;word-break:break-word;}
+
+  /* ===== 備份提醒 ===== */
+  .recap-card{background:linear-gradient(135deg,#fff 0%,var(--meadow-soft) 100%);border:1px solid var(--meadow-soft);}
+  .recap-title{font-weight:800;font-size:17px;margin-bottom:12px;}
+  .recap-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .recap-stat{text-align:center;background:#fff;border-radius:12px;padding:11px 4px;}
+  .recap-stat b{display:block;font-size:21px;color:var(--meadow-deep);line-height:1.2;}
+  .recap-stat span{font-size:11px;color:var(--muted);}
+  .recap-reflect{margin-top:13px;font-size:13.5px;color:var(--meadow-deep);line-height:1.75;text-align:center;}
+  .backup-note{font-size:12px;color:var(--muted);line-height:1.6;margin:10px 2px 0;text-align:center;}
+  .backup-nudge{display:flex;align-items:center;gap:10px;background:var(--honey-soft);border:1px solid #F0DFB8;
+    border-radius:14px;padding:11px 13px;margin-bottom:14px;}
+  .backup-nudge .bn-text{flex:1;font-size:13.5px;color:#8a5a12;font-weight:600;line-height:1.5;}
+  .backup-nudge .bn-go{background:var(--honey);color:#fff;font-weight:700;font-size:13px;padding:8px 13px;border-radius:10px;flex:0 0 auto;}
+  .backup-nudge .bn-x{color:#9a6a12;font-size:14px;padding:6px;flex:0 0 auto;}
+
+  /* ===== 分段切換 ===== */
+  .seg{display:flex;background:var(--meadow-soft);border-radius:14px;padding:4px;margin-bottom:14px;}
+  .seg-btn{flex:1;padding:9px;border-radius:11px;font-weight:700;color:var(--meadow-deep);font-size:15px;}
+  .seg-btn.active{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+  /* ===== 情緒小幫手 ===== */
+  .mood-q{font-size:17px;font-weight:700;text-align:center;}
+  .mood-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;}
+  .mood-face{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;background:var(--meadow-soft);font-size:13px;font-weight:600;color:var(--ink);}
+  .mood-face .mf{font-size:30px;}
+  .mood-face.on{background:var(--honey-soft);box-shadow:0 0 0 2px var(--honey) inset;}
+  .mood-flow-title{font-size:17px;font-weight:700;text-align:center;color:var(--meadow-deep);margin-bottom:6px;}
+  .breath{display:flex;flex-direction:column;align-items:center;gap:10px;margin:10px 0 14px;}
+  .breath-circle{width:88px;height:88px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#CFEAD3,#5E9A78);transform:scale(.6);}
+  .breath-text{font-size:16px;font-weight:700;color:var(--meadow-deep);}
+  .soothe{counter-reset:s;list-style:none;padding:0;margin:8px 0 0;}
+  .soothe li{counter-increment:s;padding:9px 0 9px 32px;position:relative;border-top:1px solid var(--line);font-size:15px;line-height:1.6;}
+  .soothe li:first-child{border-top:none;}
+  .soothe li::before{content:counter(s);position:absolute;left:0;top:9px;width:22px;height:22px;border-radius:50%;background:var(--meadow);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .mood-verse{margin-top:14px;padding:12px 14px;background:var(--meadow-soft);border-radius:14px;color:var(--meadow-deep);font-size:14.5px;text-align:center;line-height:1.7;}
+  .psteps{list-style:none;padding:0;margin:8px 0 14px;}
+  .psteps li{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.6;}
+  .psteps li:first-child{border-top:none;}
+  .psteps .pe{font-size:24px;flex:0 0 auto;}
+  .psteps b{margin-right:6px;}
+  .mood-child-note{background:var(--honey-soft);color:#9a6a12;border-radius:12px;padding:10px 13px;font-size:14px;margin-bottom:14px;text-align:center;}
+  .mood-child-note:empty{display:none;}
+  .mood-disclaimer{color:var(--muted);font-size:12.5px;line-height:1.7;text-align:center;margin:4px 6px 0;}
+
+  /* ===== 正向管教錦囊 ===== */
+  .tip{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;}
+  .tip-head{display:flex;align-items:center;gap:12px;padding:15px;font-weight:700;font-size:16px;width:100%;text-align:left;}
+  .tip-head .ti{font-size:24px;flex:0 0 auto;}
+  .tip-head .chev{margin-left:auto;color:var(--muted);transition:transform .2s;}
+  .tip.open .chev{transform:rotate(180deg);}
+  .tip-body{display:none;padding:0 15px 16px;}
+  .tip.open .tip-body{display:block;}
+  .tip-calm{background:var(--coral-soft);color:#a8512f;padding:9px 12px;border-radius:10px;font-size:14px;margin-bottom:12px;line-height:1.6;}
+  .tip-steps{counter-reset:s;list-style:none;padding:0;margin:0;}
+  .tip-steps li{counter-increment:s;padding:8px 0 8px 32px;position:relative;border-top:1px solid var(--line);font-size:15px;line-height:1.6;}
+  .tip-steps li:first-child{border-top:none;}
+  .tip-steps li::before{content:counter(s);position:absolute;left:0;top:8px;width:22px;height:22px;border-radius:50%;background:var(--meadow);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .tip-verse{margin-top:12px;padding:11px 13px;background:var(--meadow-soft);border-radius:12px;color:var(--meadow-deep);font-size:14px;text-align:center;line-height:1.7;}
+  .tip-avoid{color:var(--muted);font-size:13.5px;margin-top:10px;line-height:1.6;}
+  .tips-foot{text-align:center;color:var(--muted);font-size:13.5px;margin-top:8px;line-height:1.7;}
+
+  /* ===== 成長日記與里程碑 ===== */
+  #diary-text{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-family:inherit;font-size:16px;color:var(--ink);background:#fff;min-height:80px;resize:vertical;box-sizing:border-box;}
+  #diary-text:focus{outline:none;border-color:var(--meadow);}
+  .diary-actions{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  #diary-photo-btn{color:var(--meadow);font-weight:700;background:var(--meadow-soft);padding:10px 14px;border-radius:12px;font-size:14px;}
+  .diary-photo-name{font-size:13px;color:var(--muted);}
+  .diary-entry{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
+  .diary-entry .de-date{font-size:12.5px;color:var(--muted);margin-bottom:6px;}
+  .diary-entry .de-text{font-size:15.5px;line-height:1.75;white-space:pre-wrap;}
+  .diary-entry img{width:100%;border-radius:12px;margin-top:10px;display:block;}
+  .de-del{float:right;color:#a8512f;background:var(--coral-soft);border-radius:8px;font-size:12px;padding:3px 9px;font-weight:700;}
+  .diary-empty,.mile-empty{text-align:center;color:var(--muted);padding:20px;font-size:14.5px;}
+  .mile{display:flex;align-items:center;gap:13px;padding:13px;border-radius:14px;background:var(--meadow-soft);margin-bottom:10px;width:100%;text-align:left;}
+  .mile.done{background:var(--honey-soft);}
+  .mile .me{font-size:26px;flex:0 0 auto;}
+  .mile .mn{flex:1;font-weight:600;font-size:15.5px;}
+  .mile .mdate{font-size:11.5px;color:#9a6a12;font-weight:600;margin-top:2px;}
+  .mile .mcheck{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex:0 0 auto;}
+  .mile.done .mcheck{background:var(--honey);border-color:var(--honey);}
+
+  /* ===== 孩子模式：心情 / 相簿 ===== */
+  #kids-mood,#kids-album{display:none;flex:1;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px calc(18px + var(--safe-b));overflow:auto;}
+  body.kids-mood .kids-grid,body.kids-mood .kids-exit,
+  body.kids-album .kids-grid,body.kids-album .kids-exit{display:none;}
+  body.kids-mood #kids-mood{display:flex;}
+  body.kids-album #kids-album{display:flex;}
+  .kids-breath{margin-top:16px;text-align:center;}
+  .kids-breath-title{font-family:var(--font-round);font-size:20px;color:var(--meadow-deep);margin-bottom:6px;}
+  .kids-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .kids-gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px;}
+  .kids-gallery .empty{grid-column:1/-1;text-align:center;color:#b07d2e;font-size:16px;padding:20px;}
+
+  /* ===== 深色模式 ===== */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#161D1A; --card:#212B26; --meadow:#6FB58F; --meadow-deep:#86C7A2;
+      --meadow-soft:#26332C; --honey:#E6B45A; --honey-soft:#2E2A20;
+      --coral:#E0997E; --coral-soft:#33271F; --ink:#E7ECE8; --muted:#9BA79F;
+      --line:#33403A; --shadow:0 6px 22px rgba(0,0,0,.35);
+    }
+    .verse-card{background:linear-gradient(135deg,#1F2925 0%,#26332C 100%);border-color:#2E3B34;}
+    .verse-card .eyebrow{color:var(--meadow);}
+    .practice-card{background:linear-gradient(135deg,#262019 0%,#2E2A20 100%);border-color:#3A3322;}
+    .practice-card .eyebrow{color:var(--honey);}
+    .fruit-tag{background:#3A6450;}
+    .soon{background:#1F2925;border-color:var(--meadow);color:#cfe0d4;}
+    .soon p,.page-sub{color:var(--muted);}
+    .pill{background:#2E2A20;color:var(--honey);}
+    nav.tabbar{background:rgba(22,29,26,.96);}
+    input[type=text],select{background:#1B221E;color:var(--ink);}
+    .sheet,.sheet-mask .sheet{background:var(--bg);}
+    .btn.warn{background:#3a2a22;color:#e7a98c;}
+    /* 牧場夜景：月亮、星星、深綠 */
+    .meadow-card{background:linear-gradient(180deg,#16263A 0%,#172019 78%);}
+    .meadow-svg .hill-back{fill:#27432F;}
+    .meadow-svg .grass{fill:#2E4636;}
+    .meadow-svg .canopy{fill:#3E6B52;}
+    .meadow-svg .trunk{fill:#7C5E46;}
+    .meadow-svg .cloud-p{fill:#C9D6E2;opacity:.45;}
+    .meadow-svg .sun{display:none;}
+    .meadow-svg .moon{display:block;}
+    .meadow-svg .nightstar{display:block;}
+    .meadow-cap{color:#bcd0c2;}
+    /* 歡迎設定 / 孩子模式夜景 */
+    #onboard{background:linear-gradient(180deg,#1B2A3A 0%,#172019 100%);}
+    #onboard h2{color:#9FD9B8;}
+    #onboard .ob-lead,.ob-priv{color:#b9c9d6;}
+    #onboard .ob-block{background:rgba(255,255,255,.06);}
+    .ob-chip{background:#1B221E;color:var(--ink);border-color:var(--line);}
+    #kids-view{background:linear-gradient(180deg,#1d2a16 0%,#16231c 100%);}
+    .kids-top h2{color:#bfe6cd;}
+    .kids-top p{color:#d9b873;}
+    .kids-exit{background:rgba(255,255,255,.12);color:#cfe0d4;}
+    .habit-check{background:#1B221E;}
+    .emoji-opt{background:#1B221E;}
+    .k-habit{background:#212B26;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+    .k-habit .kn{color:var(--ink);}
+    .k-star{background:#1B221E;border-color:#3a463f;color:#6b7a70;}
+    .k-habit.done{background:linear-gradient(135deg,#33301f,#3a3522);}
+    .kids-back{background:rgba(255,255,255,.12);color:#cfe0d4;}
+    .kids-h2{color:#bfe6cd;}
+    .seg-btn.active{background:var(--card);}
+    #diary-text{background:#1B221E;}
+    .kids-gallery .empty,.kids-breath-title{color:#bfe6cd;}
+    .backup-nudge{background:#2E2A20;border-color:#3A3322;}
+    .backup-nudge .bn-text{color:#e6c98a;}
+    .recap-card{background:linear-gradient(135deg,#1F2925 0%,#26332C 100%);border-color:#2E3B34;}
+    .recap-stat{background:#1B221E;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 父母模式 ============ -->
+<div id="app">
+  <header class="topbar">
+    <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
+      <!-- 小羊 + 星星標誌 -->
+      <circle cx="24" cy="27" r="13" fill="#fff" opacity=".95"/>
+      <circle cx="24" cy="23" r="9" fill="#fff"/>
+      <circle cx="20" cy="22" r="1.6" fill="#3A6450"/>
+      <circle cx="28" cy="22" r="1.6" fill="#3A6450"/>
+      <path d="M20 27 q4 3 8 0" stroke="#3A6450" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <path d="M12 38 l2-4 3 4 m14 0 l3-4 2 4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M37 11 l1.4 3 3.2.3-2.4 2.2.7 3.2-2.9-1.7-2.9 1.7.7-3.2-2.4-2.2 3.2-.3z" fill="#E0A234"/>
+    </svg>
+    <div class="brand-txt"><b>321 親子同行</b><span>陪小羊走當行的道</span></div>
+    <div class="right">
+      <button class="icon-btn" id="btn-kids" aria-label="孩子模式">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5S14 16 14.5 19"/><path d="M16 7.5l1 2 2 .2-1.5 1.4.4 2-1.9-1-1.9 1 .4-2-1.5-1.4 2-.2z" fill="#fff" stroke="none"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" aria-label="設定">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ① 今日（首頁）：好習慣集點主場 + 每日經文 -->
+    <section class="page active" id="page-today">
+      <div class="backup-nudge" id="backup-nudge" hidden>
+        <span class="bn-text" id="backup-nudge-text"></span>
+        <button class="bn-go" id="backup-nudge-go">立即備份</button>
+        <button class="bn-x" id="backup-nudge-x" aria-label="今天先不要">✕</button>
+      </div>
+      <div class="card meadow-card" id="meadow-card" aria-hidden="true">
+        <svg class="meadow-svg" id="meadow-svg" viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg">
+  <path class="hill-back" d="M0 108 Q80 92 170 104 T320 100 L320 170 L0 170 Z"/>
+  <path class="grass" d="M0 132 Q90 118 180 130 T320 126 L320 170 L0 170 Z"/>
+  <rect class="trunk" x="36" y="86" width="10" height="38" rx="4"/>
+  <circle class="canopy" cx="28" cy="74" r="16"/><circle class="canopy" cx="52" cy="74" r="16"/>
+  <circle class="canopy" cx="40" cy="63" r="18"/><circle class="canopy" cx="40" cy="78" r="17"/>
+  <g id="leaves"></g>
+  <g class="cloud cloud1"><ellipse class="cloud-p" cx="83" cy="32" rx="9" ry="7"/><ellipse class="cloud-p" cx="95" cy="28" rx="12" ry="9"/><ellipse class="cloud-p" cx="107" cy="32" rx="9" ry="7"/><ellipse class="cloud-p" cx="95" cy="35" rx="13" ry="7"/></g>
+  <g class="cloud cloud2"><ellipse class="cloud-p" cx="180" cy="22" rx="8" ry="6"/><ellipse class="cloud-p" cx="190" cy="19" rx="10" ry="7"/><ellipse class="cloud-p" cx="200" cy="22" rx="8" ry="6"/></g>
+  <circle class="nightstar" cx="120" cy="26" r="1.8"/><circle class="nightstar" cx="165" cy="18" r="1.8"/><circle class="nightstar" cx="205" cy="30" r="1.8"/><circle class="nightstar" cx="235" cy="20" r="1.8"/><circle class="nightstar" cx="150" cy="40" r="1.8"/>
+  <g class="sun"><line class="sun-ray" x1="288.0" y1="30.0" x2="295.0" y2="30.0"/><line class="sun-ray" x1="285.3" y1="40.0" x2="291.4" y2="43.5"/><line class="sun-ray" x1="278.0" y1="47.3" x2="281.5" y2="53.4"/><line class="sun-ray" x1="268.0" y1="50.0" x2="268.0" y2="57.0"/><line class="sun-ray" x1="258.0" y1="47.3" x2="254.5" y2="53.4"/><line class="sun-ray" x1="250.7" y1="40.0" x2="244.6" y2="43.5"/><line class="sun-ray" x1="248.0" y1="30.0" x2="241.0" y2="30.0"/><line class="sun-ray" x1="250.7" y1="20.0" x2="244.6" y2="16.5"/><line class="sun-ray" x1="258.0" y1="12.7" x2="254.5" y2="6.6"/><line class="sun-ray" x1="268.0" y1="10.0" x2="268.0" y2="3.0"/><line class="sun-ray" x1="278.0" y1="12.7" x2="281.5" y2="6.6"/><line class="sun-ray" x1="285.3" y1="20.0" x2="291.4" y2="16.5"/><circle class="sun-core" cx="268" cy="30" r="17"/><circle class="eye" cx="262" cy="29" r="1.8"/><circle class="eye" cx="274" cy="29" r="1.8"/><path class="smile" d="M261 34 Q268 41 275 34"/></g>
+  <g class="moon"><circle class="moon-core" cx="268" cy="30" r="16"/><circle class="moon-crater" cx="263" cy="27" r="3"/><circle class="moon-crater" cx="272" cy="34" r="2.2"/></g>
+  <g id="flowers"></g>
+  <g class="lamb">
+    <ellipse class="lamb-body" cx="170" cy="124" rx="18" ry="16"/>
+    <circle class="lamb-body" cx="158" cy="118" r="11"/><circle class="lamb-body" cx="182" cy="118" r="11"/>
+    <circle class="lamb-body" cx="163" cy="111" r="10"/><circle class="lamb-body" cx="177" cy="111" r="10"/><circle class="lamb-body" cx="170" cy="109" r="11"/>
+    <rect class="lamb-leg" x="158" y="136" width="6" height="10" rx="3"/><rect class="lamb-leg" x="176" y="136" width="6" height="10" rx="3"/>
+    <ellipse class="lamb-body" cx="159" cy="115" rx="4" ry="5"/><ellipse class="lamb-body" cx="181" cy="115" rx="4" ry="5"/>
+    <circle class="lamb-body" cx="170" cy="114" r="12"/>
+    <circle class="lamb-body" cx="165" cy="103" r="4"/><circle class="lamb-body" cx="170" cy="101" r="4.5"/><circle class="lamb-body" cx="175" cy="103" r="4"/>
+    <circle class="eye" cx="166" cy="113" r="1.7"/><circle class="eye" cx="174" cy="113" r="1.7"/>
+    <circle class="cheek" cx="162" cy="117" r="2.4"/><circle class="cheek" cx="178" cy="117" r="2.4"/>
+    <path class="smile" d="M166 117 Q170 121 174 117"/>
+  </g>
+  <g class="butterfly"><ellipse class="bf-wing" cx="146" cy="92" rx="5" ry="6"/><ellipse class="bf-wing2" cx="146" cy="99" rx="4" ry="5"/><ellipse class="bf-wing" cx="154" cy="92" rx="5" ry="6"/><ellipse class="bf-wing2" cx="154" cy="99" rx="4" ry="5"/><line class="bf-body" x1="150" y1="86" x2="150" y2="100"/><line class="bf-body" x1="150" y1="86" x2="147" y2="82"/><line class="bf-body" x1="150" y1="86" x2="153" y2="82"/></g>
+</svg>
+        <div class="meadow-cap" id="meadow-cap">—</div>
+      </div>
+      <div class="card verse-card">
+        <div class="eyebrow">今日的話</div>
+        <div class="verse" id="verse-text">—</div>
+        <div class="ref" id="verse-ref"></div>
+      </div>
+
+      <div class="card practice-card">
+        <div class="eyebrow-row">
+          <span class="eyebrow">爸媽今日的操練</span>
+          <span class="fruit-tag" id="fruit-tag">—</span>
+        </div>
+        <p class="practice-text" id="practice-text">—</p>
+        <p class="practice-note">孩子是我的「2」。今天操練無己（0），讓聖靈在我裡面結出果子（9）。</p>
+        <button class="btn practice-btn" id="practice-btn">今天我操練了</button>
+        <div class="streak" id="practice-streak"></div>
+      </div>
+
+      <div class="card" id="habit-card">
+        <div class="habit-head">
+          <div class="page-title">今天，<span id="hi-name">寶貝</span></div>
+          <button class="link-btn" id="habit-edit-btn">管理</button>
+        </div>
+        <div class="habit-progress" id="habit-progress"></div>
+        <div id="habit-list"></div>
+        <div class="habit-week" id="habit-week"></div>
+      </div>
+      <div class="card recap-card" id="recap-card" hidden>
+        <div class="recap-title">本週回顧</div>
+        <div class="recap-stats" id="recap-stats"></div>
+        <div class="recap-reflect" id="recap-reflect"></div>
+      </div>
+    </section>
+
+    <!-- ② 親子今日任務 -->
+    <section class="page" id="page-task">
+      <div class="page-title">親子今日任務</div>
+      <p class="page-sub">每天一個 5–10 分鐘的小行動，焦點在關係，不在表現。</p>
+      <div class="card task-card">
+        <div class="task-icon" id="task-icon">🤝</div>
+        <div class="task-title" id="task-title">—</div>
+        <div class="task-desc" id="task-desc">—</div>
+        <button class="btn" id="task-done-btn">今天一起完成了</button>
+        <button id="task-shuffle">換一個任務</button>
+        <div class="task-note">孩子是我的「2」。放下「要把事做完」，只要與他好好同在。</div>
+      </div>
+      <div class="card">
+        <div class="task-stat" id="task-stat"></div>
+        <div class="task-hearts" id="task-hearts"></div>
+      </div>
+    </section>
+
+    <!-- ③ 情緒小幫手 -->
+    <section class="page" id="page-mood">
+      <div class="page-title">情緒小幫手</div>
+      <p class="page-sub">先穩住自己，再陪孩子認識情緒。</p>
+      <div class="seg" id="mood-seg">
+        <button class="seg-btn active" data-mood="kid">孩子版</button>
+        <button class="seg-btn" data-mood="parent">父母版</button>
+      </div>
+
+      <div class="mood-pane" id="mood-kid">
+        <div class="card">
+          <div class="mood-q">寶貝，你現在的心情是？</div>
+          <div class="mood-grid" id="mood-grid"></div>
+        </div>
+        <div class="card mood-flow" id="mood-flow" hidden>
+          <div class="mood-flow-title" id="mood-flow-title">—</div>
+          <div class="breath">
+            <div class="breath-circle"></div>
+            <div class="breath-text">準備好了嗎？</div>
+          </div>
+          <button class="btn breath-btn">開始深呼吸</button>
+          <ol class="soothe" id="soothe"></ol>
+          <div class="mood-verse" id="mood-verse"></div>
+        </div>
+      </div>
+
+      <div class="mood-pane" id="mood-parent" hidden>
+        <div class="card">
+          <div class="mood-child-note" id="mood-child-note"></div>
+          <div class="mood-q">當孩子情緒上來，先穩住自己</div>
+          <ul class="psteps">
+            <li><span class="pe">🛑</span><span><b>停</b>先不要立刻反應，給彼此三秒鐘。</span></li>
+            <li><span class="pe">🌬️</span><span><b>呼吸</b>深呼吸三次，讓自己的心先安靜下來。</span></li>
+            <li><span class="pe">🧎</span><span><b>蹲下</b>蹲到孩子的高度，眼神平視。</span></li>
+            <li><span class="pe">💗</span><span><b>同理</b>先接住情緒「你很生氣對嗎」，再講道理。</span></li>
+          </ul>
+          <div class="breath">
+            <div class="breath-circle"></div>
+            <div class="breath-text">換你深呼吸</div>
+          </div>
+          <button class="btn breath-btn">我也深呼吸一下</button>
+          <div class="mood-verse">「你們各人要快快地聽，慢慢地說，慢慢地動怒。」雅各書 1:19</div>
+          <div class="task-note">用心不用腦——一生的果效是從心發出（箴言 4:23）。</div>
+        </div>
+      </div>
+      <p class="mood-disclaimer">情緒小幫手是日常的陪伴與安撫，不能取代專業協助。若孩子或你長期情緒低落、難以平復，請尋求醫師或專業輔導的幫助。</p>
+    </section>
+
+    <!-- ④ 正向管教錦囊 -->
+    <section class="page" id="page-tips">
+      <div class="page-title">正向管教錦囊</div>
+      <p class="page-sub">遇到狀況時，給你溫柔而堅定、合乎聖經的回應。</p>
+      <div id="tips-list"></div>
+      <div class="tips-foot">管教的目的是引導，不是發洩。謙卑戰勝驕傲，不為一件事傷害一個人。</div>
+    </section>
+
+    <!-- ⑤ 成長日記與里程碑 -->
+    <section class="page" id="page-grow">
+      <div class="page-title">成長日記與里程碑</div>
+      <p class="page-sub">記錄點滴，看見神在孩子身上的恩典。</p>
+      <div class="seg" id="grow-seg">
+        <button class="seg-btn active" data-grow="diary">成長日記</button>
+        <button class="seg-btn" data-grow="mile">里程碑</button>
+      </div>
+      <div class="grow-pane" id="grow-diary">
+        <div class="card">
+          <textarea id="diary-text" placeholder="今天孩子發生了什麼值得記念的事？"></textarea>
+          <div class="diary-actions">
+            <button id="diary-photo-btn">📷 加照片</button>
+            <span class="diary-photo-name" id="diary-photo-name"></span>
+            <button class="btn" id="diary-save" style="width:auto;margin-left:auto;padding:11px 18px;">記下來</button>
+          </div>
+        </div>
+        <div id="diary-list"></div>
+      </div>
+      <div class="grow-pane" id="grow-mile" hidden>
+        <div id="mile-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button class="tab active" data-page="today">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M19.5 4.5l-1.8 1.8M6.3 17.7l-1.8 1.8"/></svg>
+      今日<span class="dot"></span>
+    </button>
+    <button class="tab" data-page="task">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12l2.2 2.2 4.3-4.6"/></svg>
+      任務<span class="dot"></span>
+    </button>
+    <button class="tab" data-page="mood">
+      <svg viewBox="0 0 24 24"><path d="M12 20S4 14.5 4 9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 8 2.2C20 14.5 12 20 12 20z"/></svg>
+      情緒<span class="dot"></span>
+    </button>
+    <button class="tab" data-page="tips">
+      <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.2 9.5a2 2 0 0 1-2 1.7H8.2a2 2 0 0 1-2-1.7z"/><path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9"/></svg>
+      錦囊<span class="dot"></span>
+    </button>
+    <button class="tab" data-page="grow">
+      <svg viewBox="0 0 24 24"><path d="M12 21v-7"/><path d="M12 14c0-3 2.5-5 5.5-5 0 3-2.5 5-5.5 5z"/><path d="M12 14c0-3-2.5-5-5.5-5 0 3 2.5 5 5.5 5z"/></svg>
+      成長<span class="dot"></span>
+    </button>
+  </nav>
+</div>
+
+<!-- ============ 孩子模式 ============ -->
+<div id="kids-view">
+  <div class="kids-top">
+    <h2 id="kids-hi">嗨，寶貝！</h2>
+    <p>今天想做什麼呢？</p>
+  </div>
+  <div class="kids-grid">
+    <button class="kids-btn kb-habit" id="kb-habit"><span class="k-emoji">⭐</span>我的好習慣</button>
+    <button class="kids-btn kb-mood" id="kb-mood"><span class="k-emoji">😊</span>我的心情</button>
+    <button class="kids-btn kb-album" id="kb-album"><span class="k-emoji">📸</span>我的相簿</button>
+  </div>
+  <button class="kids-exit" id="kids-exit"><span class="hold-fill"></span><span class="hold-label">🔒 長按 1.5 秒回到爸爸媽媽</span></button>
+  <div id="kids-habits">
+    <button class="kids-back" id="kids-habits-back">‹ 回去</button>
+    <h2 class="kids-h2">我的好習慣 ⭐</h2>
+    <div id="kids-habit-list"></div>
+  </div>
+  <div id="kids-mood">
+    <button class="kids-back" id="kids-mood-back">‹ 回去</button>
+    <h2 class="kids-h2">我的心情 😊</h2>
+    <div class="mood-grid" id="kids-mood-grid"></div>
+    <div class="kids-breath" id="kids-breath" hidden>
+      <div class="kids-breath-title" id="kids-breath-title">我們一起深呼吸</div>
+      <div class="breath"><div class="breath-circle"></div><div class="breath-text">準備好了嗎？</div></div>
+      <button class="btn breath-btn">開始深呼吸</button>
+    </div>
+  </div>
+  <div id="kids-album">
+    <button class="kids-back" id="kids-album-back">‹ 回去</button>
+    <h2 class="kids-h2">我的相簿 📸</h2>
+    <div class="kids-gallery" id="kids-gallery"></div>
+  </div>
+</div>
+
+<!-- ============ 首次歡迎設定 ============ -->
+<div id="onboard">
+  <div class="ob-inner">
+    <h2>歡迎一起同行 🌿</h2>
+    <p class="ob-lead">先認識你的小羊，<br>讓我們陪你每天用正向、合乎聖經的方式同行。</p>
+    <div class="ob-block">
+      <h4>孩子的名字</h4>
+      <input type="text" id="ob-name" placeholder="例如：恩恩" maxlength="8">
+    </div>
+    <div class="ob-block">
+      <h4>孩子的生日</h4>
+      <div class="ob-birth">
+        <select id="ob-year"></select>
+        <select id="ob-month"></select>
+      </div>
+      <p class="ob-hint">用來計算年齡與成長里程碑，可之後在設定修改。</p>
+    </div>
+    <div class="ob-block">
+      <h4>先挑幾個好習慣（可複選）</h4>
+      <div class="ob-chips" id="ob-chips"></div>
+      <p class="ob-hint">之後都能在「今日」頁自由增減。</p>
+    </div>
+    <p class="ob-priv">🔒 你的資料只留在這支裝置：無帳號、不上傳、不追蹤、無廣告。<br>小提醒：把本 App「加入主畫面」，資料更穩、開啟更快。</p>
+    <button class="btn" id="ob-start">開始同行</button>
+  </div>
+</div>
+
+<div class="sheet-mask" id="settings-mask">
+  <div class="sheet">
+    <h3>設定</h3>
+    <p class="page-sub" style="margin-bottom:14px;">🔒 你的資料只留在這支裝置：無帳號、不上傳、不追蹤、無廣告。請記得定期備份。</p>
+    <div class="row">
+      <label>孩子的名字
+        <span class="hint">會顯示在首頁與孩子模式</span></label>
+      <input type="text" id="set-name" placeholder="寶貝" maxlength="8">
+    </div>
+    <div class="row">
+      <label>孩子的生日
+        <span class="hint">用來計算年齡與成長里程碑</span></label>
+      <div style="display:flex;gap:8px;">
+        <select id="set-year" style="width:88px;"></select>
+        <select id="set-month" style="width:74px;"></select>
+      </div>
+    </div>
+    <div class="row">
+      <label>切換到孩子模式
+        <span class="hint">大按鈕、簡單操作，給孩子用</span></label>
+      <button class="btn ghost" style="width:auto;padding:10px 16px;" id="set-kids">前往</button>
+    </div>
+    <div style="height:8px;"></div>
+    <button class="btn" id="set-save">儲存設定</button>
+    <div class="btn-row">
+      <button class="btn ghost" id="set-export">匯出備份</button>
+      <button class="btn ghost" id="set-import">匯入還原</button>
+    </div>
+    <p class="backup-note"><span id="backup-info"></span>　·　備份檔含孩子照片與個資，請妥善保管、勿隨意外傳。</p>
+    <div style="height:6px;"></div>
+    <button class="btn warn" id="set-close">關閉</button>
+  </div>
+</div>
+
+<div class="sheet-mask" id="habit-mask">
+  <div class="sheet">
+    <h3>管理好習慣</h3>
+    <p class="page-sub" style="margin-bottom:12px;">最多 8 個，貼近孩子的生活就好。</p>
+    <div id="habit-edit-list"></div>
+    <div class="habit-add">
+      <div class="emoji-pick" id="emoji-pick"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input type="text" id="new-habit-name" placeholder="新習慣名稱" maxlength="10" style="flex:1;text-align:left;width:auto;">
+        <button class="btn" id="add-habit-btn" style="width:auto;padding:11px 18px;">加入</button>
+      </div>
+    </div>
+    <div style="height:10px;"></div>
+    <button class="btn warn" id="habit-close">完成</button>
+  </div>
+</div>
+
+<input type="file" id="import-file" accept="application/json" style="display:none;">
+<input type="file" id="diary-photo-input" accept="image/*" style="display:none;">
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   321 親子同行 — 第 8 步：內容擴充 + 本週回顧
+   理念：孩子是我的「2」，教養是操練無己(0)、結聖靈果子(9)
+   技術：單一 HTML PWA（+sw.js/圖示）、localStorage、IndexedDB（照片+資料鏡射）
+   本步：經文 31／爸媽操練 30／親子任務 30；首頁「本週回顧」（好習慣·操練·親子時光·里程碑＋321 反思）
+   ========================================================= */
+
+/* ---------- 0. 常數 ---------- */
+const NS = 'sap_';                 // localStorage 命名空間
+const DATA_VERSION = 1;            // 之後做資料升級用
+
+/* ---------- 1. 本機儲存層（穩健包裝）---------- */
+const Store = {
+  get(key, fallback=null){
+    try{
+      const raw = localStorage.getItem(NS+key);
+      return raw === null ? fallback : JSON.parse(raw);
+    }catch(e){ console.warn('讀取失敗', key, e); return fallback; }
+  },
+  set(key, val){
+    try{ localStorage.setItem(NS+key, JSON.stringify(val)); }
+    catch(e){ console.warn('寫入失敗', key, e); toast('儲存空間不足或被封鎖'); return false; }
+    try{ Media.kvPut(NS+key, val); }catch(e){}      // 鏡射到 IndexedDB（更耐久）
+    return true;
+  },
+  remove(key){ try{ localStorage.removeItem(NS+key); }catch(e){} try{ Media.kvDel(NS+key); }catch(e){} },
+  // 匯出時取得所有 sap_ 開頭的資料
+  dump(){
+    const out = {};
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith(NS)){ try{ out[k]=JSON.parse(localStorage.getItem(k)); }catch(e){ out[k]=localStorage.getItem(k);} }
+    }
+    return out;
+  },
+  load(obj){
+    Object.keys(obj).forEach(k=>{
+      if(k.startsWith(NS)){ try{ localStorage.setItem(k, JSON.stringify(obj[k])); }catch(e){} try{ Media.kvPut(k, obj[k]); }catch(e){} }
+    });
+  }
+};
+/* 資料版本遷移：未來資料結構改變時，在此逐版升級，保護回訪用戶的舊資料 */
+function migrate(){
+  const from = Store.get('schemaVersion', 0);
+  if(from < DATA_VERSION){
+    // 例：if(from < 2){ ...把舊欄位轉成新結構... }
+    Store.set('schemaVersion', DATA_VERSION);
+  }
+}
+
+/* ---------- 2. IndexedDB：照片 + 資料鏡射（更耐久，抗清除）---------- */
+const Media = {
+  db:null,
+  open(){
+    return new Promise((resolve)=>{
+      if(this.db) return resolve(this.db);
+      if(!('indexedDB' in window)){ console.warn('此瀏覽器不支援 IndexedDB'); return resolve(null); }
+      const req = indexedDB.open('sap_media', 2);
+      req.onupgradeneeded = e=>{
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains('photos')){ db.createObjectStore('photos', { keyPath:'id' }); }
+        if(!db.objectStoreNames.contains('kv')){ db.createObjectStore('kv', { keyPath:'k' }); }
+      };
+      req.onsuccess = e=>{ this.db = e.target.result; resolve(this.db); };
+      req.onerror = ()=>{ console.warn('IndexedDB 開啟失敗'); resolve(null); };
+    });
+  },
+  async put(id, blob){
+    const db = await this.open(); if(!db) return false;
+    return new Promise(res=>{
+      const tx = db.transaction('photos','readwrite');
+      tx.objectStore('photos').put({ id, blob, t:Date.now() });
+      tx.oncomplete=()=>res(true); tx.onerror=()=>res(false);
+    });
+  },
+  async get(id){
+    const db = await this.open(); if(!db) return null;
+    return new Promise(res=>{
+      const tx = db.transaction('photos','readonly');
+      const r = tx.objectStore('photos').get(id);
+      r.onsuccess=()=>res(r.result?r.result.blob:null); r.onerror=()=>res(null);
+    });
+  },
+  async getAll(){
+    const db = await this.open(); if(!db) return [];
+    return new Promise(res=>{
+      const tx = db.transaction('photos','readonly');
+      const r = tx.objectStore('photos').getAll();
+      r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]);
+    });
+  },
+  // ---- 鍵值鏡射（與 localStorage 同步，做為救命備援）----
+  async kvPut(k, v){
+    const db = await this.open(); if(!db) return;
+    try{ const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').put({ k:k, v:v }); }catch(e){}
+  },
+  async kvDel(k){
+    const db = await this.open(); if(!db) return;
+    try{ const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').delete(k); }catch(e){}
+  },
+  async kvAll(){
+    const db = await this.open(); if(!db) return [];
+    return new Promise(res=>{
+      try{ const tx = db.transaction('kv','readonly'); const r = tx.objectStore('kv').getAll();
+        r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]); }
+      catch(e){ res([]); }
+    });
+  }
+};
+/* 開機補水：若 localStorage 被清掉，從 IndexedDB 救回；反之則把 LS 種進 IDB，兩邊一致 */
+async function hydrate(){
+  const rows = await Media.kvAll();
+  const idb = {}; rows.forEach(r=>{ idb[r.k]=r.v; });
+  // IDB → localStorage（救回遺失的資料）
+  Object.keys(idb).forEach(k=>{
+    if(k.indexOf(NS)===0 && localStorage.getItem(k)===null){
+      try{ localStorage.setItem(k, JSON.stringify(idb[k])); }catch(e){}
+    }
+  });
+  // localStorage → IDB（首次或新資料的種子）
+  const lsKeys=[];
+  for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && k.indexOf(NS)===0) lsKeys.push(k); }
+  lsKeys.forEach(k=>{ if(!(k in idb)){ try{ Media.kvPut(k, JSON.parse(localStorage.getItem(k))); }catch(e){} } });
+}
+/* base64 <-> blob 轉換（備份照片用）*/
+function blobToDataURL(blob){
+  return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>res(null); r.readAsDataURL(blob); });
+}
+function dataURLtoBlob(d){
+  try{
+    const [meta,b64]=d.split(','); const mime=(meta.match(/:(.*?);/)||[])[1]||'image/jpeg';
+    const bin=atob(b64); const u=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    return new Blob([u],{type:mime});
+  }catch(e){ return null; }
+}
+/* 照片壓縮：就算「存原圖」也先縮到合理尺寸，避免容量爆掉（第 6 步會用）*/
+function compressImage(file, maxSide=1600, quality=0.85){
+  return new Promise(resolve=>{
+    const url=URL.createObjectURL(file); const img=new Image();
+    img.onload=()=>{
+      let w=img.width, h=img.height;
+      if(Math.max(w,h)>maxSide){ const s=maxSide/Math.max(w,h); w=Math.round(w*s); h=Math.round(h*s); }
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      c.toBlob(b=>{ URL.revokeObjectURL(url); resolve(b||file); }, 'image/jpeg', quality);
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); resolve(file); };
+    img.src=url;
+  });
+}
+
+/* ---------- 3. 每日經文（和合本）---------- */
+const VERSES = [
+  {t:'教養孩童，使他走當行的道，就是到老他也不偏離。', r:'箴言 22:6'},
+  {t:'你們作父親的，不要惹兒女的氣，只要照著主的教訓和警戒養育他們。', r:'以弗所書 6:4'},
+  {t:'兒女是耶和華所賜的產業；所懷的胎是他所給的賞賜。', r:'詩篇 127:3'},
+  {t:'無論你坐在家裏，行在路上，躺下，起來，都要殷勤教訓你的兒女。', r:'申命記 6:7'},
+  {t:'凡管教的事，當時不覺得快樂，反覺得愁苦；後來卻結出平安的果子，就是義。', r:'希伯來書 12:11'},
+  {t:'愛是恆久忍耐，又有恩慈；凡事包容，凡事相信，凡事盼望，凡事忍耐。', r:'哥林多前書 13:4,7'},
+  {t:'你們親近神，神就必親近你們。', r:'雅各書 4:8'},
+  {t:'你要專心仰賴耶和華，不可倚靠自己的聰明。', r:'箴言 3:5'},
+  {t:'回答柔和，使怒消退；言語暴戾，觸動怒氣。', r:'箴言 15:1'},
+  {t:'耶和華是我的牧者，我必不致缺乏。', r:'詩篇 23:1'},
+  {t:'我們愛，因為神先愛我們。', r:'約翰一書 4:19'},
+  {t:'聖靈所結的果子，就是仁愛、喜樂、和平、忍耐、恩慈、良善、信實、溫柔、節制。', r:'加拉太書 5:22-23'},
+  {t:'應當一無掛慮，只要凡事藉著禱告、祈求和感謝，將你們所要的告訴神。', r:'腓立比書 4:6'},
+  {t:'我靠著那加給我力量的，凡事都能做。', r:'腓立比書 4:13'},
+  {t:'讓小孩子到我這裏來，不要禁止他們；因為在神國的，正是這樣的人。', r:'馬可福音 10:14'},
+  {t:'若不是耶和華建造房屋，建造的人就枉然勞力。', r:'詩篇 127:1'},
+  {t:'喜樂的心乃是良藥；憂傷的靈使骨枯乾。', r:'箴言 17:22'},
+  {t:'要常常喜樂，不住地禱告，凡事謝恩。', r:'帖撒羅尼迦前書 5:16-18'},
+  {t:'至於我和我家，我們必定事奉耶和華。', r:'約書亞記 24:15'},
+  {t:'我要稱謝你，因我受造，奇妙可畏。', r:'詩篇 139:14'},
+  {t:'他必像牧人牧養自己的羊群，用膀臂聚集羊羔抱在懷中。', r:'以賽亞書 40:11'},
+  {t:'不輕易發怒的，勝過勇士；治服己心的，強如取城。', r:'箴言 16:32'},
+  {t:'你們作父親的，不要惹兒女的氣，恐怕他們失了志氣。', r:'歌羅西書 3:21'},
+  {t:'父親怎樣憐恤他的兒女，耶和華也怎樣憐恤敬畏他的人。', r:'詩篇 103:13'},
+  {t:'耶穌的智慧和身量，並神和人喜愛他的心，都一齊增長。', r:'路加福音 2:52'},
+  {t:'你要保守你心，勝過保守一切，因為一生的果效是由心發出。', r:'箴言 4:23'},
+  {t:'你出你入，耶和華要保護你，從今時直到永遠。', r:'詩篇 121:8'},
+  {t:'你們要將一切的憂慮卸給神，因為他顧念你們。', r:'彼得前書 5:7'},
+  {t:'凡你們所做的都要憑愛心而做。', r:'哥林多前書 16:14'},
+  {t:'你們要嘗嘗主恩的滋味，便知道他是美善。', r:'詩篇 34:8'},
+  {t:'神能照著運行在我們心裏的大力，成就一切，超過我們所求所想的。', r:'以弗所書 3:20'}
+];
+function todayVerse(){
+  // 依日期輪播，同一天固定同一節
+  const d = new Date();
+  const day = Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
+  return VERSES[day % VERSES.length];
+}
+
+/* ---------- 3b. 爸媽今日的操練（對準九個聖靈果子）---------- */
+const PRACTICES = [
+  {fruit:'仁愛', text:'今天放下手機，專心看孩子的眼睛三分鐘，讓他知道「我在這裡」。'},
+  {fruit:'喜樂', text:'今天為孩子的一個小進步真心歡呼，不挑剔、不和別人比較。'},
+  {fruit:'和平', text:'今天語氣放慢、聲音放軟；孩子吵鬧時，先讓自己的心安靜下來。'},
+  {fruit:'忍耐', text:'今天孩子拖拖拉拉時，深呼吸三次，多等他十秒，不催不吼。'},
+  {fruit:'恩慈', text:'今天孩子犯錯時，先蹲下來好好說，把「責罵」換成「引導」。'},
+  {fruit:'良善', text:'今天主動為孩子做一件他沒求你的小事，讓愛先流動。'},
+  {fruit:'信實', text:'今天答應孩子的事，再小也守住；說到做到。'},
+  {fruit:'溫柔', text:'今天孩子情緒上來時不硬碰硬；先接住他的情緒，再講道理。'},
+  {fruit:'節制', text:'今天當怒氣上來，先離開現場深呼吸，不在情緒裡管教孩子。'},
+  {fruit:'仁愛', text:'今天睡前抱抱孩子，和他一起謝飯謝天，把一天交給神。'},
+  {fruit:'忍耐', text:'今天孩子問「為什麼」問到第五次，仍然溫柔地回答他。'},
+  {fruit:'喜樂', text:'今天和孩子一起放聲大笑一次，玩他想玩的遊戲五分鐘。'},
+  {fruit:'仁愛', text:'今天對孩子說三次「我愛你」，不附帶任何條件。'},
+  {fruit:'和平', text:'今天若和孩子起衝突，先放下「我要贏」，求聖靈給你平和。'},
+  {fruit:'恩慈', text:'今天用孩子聽得懂的話，具體稱讚他一個好行為。'},
+  {fruit:'忍耐', text:'今天孩子做得慢時，忍住不替他做，給他自己完成的機會。'},
+  {fruit:'良善', text:'今天和孩子一起做一件幫助別人的小事，讓他看見善。'},
+  {fruit:'節制', text:'今天減少一次對孩子的嘮叨，把話縮短成一句。'},
+  {fruit:'溫柔', text:'今天孩子哭的時候，先抱住他，不急著說「不要哭」。'},
+  {fruit:'信實', text:'今天守住一個小約定，讓孩子知道爸媽的話可以信。'},
+  {fruit:'喜樂', text:'今天找一件孩子身上的恩典，向神獻上感謝。'},
+  {fruit:'仁愛', text:'今天問孩子「今天最開心的事是什麼」，認真聽完。'},
+  {fruit:'和平', text:'今天放下完美，允許家裡有點亂，先顧人不顧事。'},
+  {fruit:'恩慈', text:'今天孩子失敗時，先肯定他的努力，再陪他想辦法。'},
+  {fruit:'忍耐', text:'今天重複教同一件事時，提醒自己：重複是愛的功課。'},
+  {fruit:'節制', text:'今天把想說的批評先吞下，換成一句鼓勵。'},
+  {fruit:'良善', text:'今天為孩子禱告一分鐘，求神祝福他的生命。'},
+  {fruit:'溫柔', text:'今天蹲到孩子的高度跟他說話，眼神平視。'},
+  {fruit:'信實', text:'今天即使很累，仍陪孩子完成睡前的小儀式。'},
+  {fruit:'喜樂', text:'今天和孩子一起唱一首詩歌，讓讚美充滿家。'}
+];
+function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function todayPractice(){
+  const d=new Date(); const day=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+  return PRACTICES[day % PRACTICES.length];
+}
+function practiceStreak(){
+  const log=Store.get('practiceLog',{}); let n=0; const d=new Date();
+  for(;;){ const k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    if(log[k]){ n++; d.setDate(d.getDate()-1); } else break; }
+  return n;
+}
+function renderPractice(){
+  const p=todayPractice();
+  document.getElementById('fruit-tag').textContent=p.fruit;
+  document.getElementById('practice-text').textContent=p.text;
+  const log=Store.get('practiceLog',{}); const done=!!log[todayKey()];
+  const btn=document.getElementById('practice-btn');
+  btn.textContent= done ? '今天已操練 ✓' : '今天我操練了';
+  btn.classList.toggle('done', done);
+  const s=practiceStreak();
+  document.getElementById('practice-streak').textContent =
+    s>0 ? '🌿 連續 '+s+' 天，與小羊一起在好牧人面前長大' : '';
+  renderMeadow();
+}
+
+/* 牧場：父母操練→樹開花；孩子好習慣→草地開花（夜晚換月亮星星）*/
+function parentLeaves(){ return Math.min(8, practiceStreak()); }
+function childFlowersToday(){ const log=Store.get('habitLog',{}); const a=log[todayKey()]; return Array.isArray(a)?Math.min(6,a.length):0; }
+function flowerSVG(cx,cy,col){
+  let s='<line x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="'+(cy+8)+'" stroke="#6FA06E" stroke-width="1.6"/>';
+  for(var a=0;a<5;a++){ var ang=a*2*Math.PI/5-Math.PI/2, px=cx+3.4*Math.cos(ang), py=cy+3.4*Math.sin(ang);
+    s+='<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="2.6" fill="'+col+'"/>'; }
+  return s+'<circle cx="'+cx+'" cy="'+cy+'" r="1.8" fill="#F4C450"/>';
+}
+function renderMeadow(){
+  var BLOSSOM=[[30,66],[50,66],[26,78],[54,78],[40,57],[33,86],[47,86],[40,72]];
+  var FLOWER=[[92,142],[252,140],[118,152],[278,150],[230,147],[150,160]];
+  var FCOL=['#F4A096','#FFFFFF','#CEB4EB','#F4A096','#FFD27A','#FFFFFF'];
+  var bloss=parentLeaves(), flw=childFlowersToday();
+  var lg=''; for(var i=0;i<bloss && i<BLOSSOM.length;i++){ var b=BLOSSOM[i];
+    lg+='<circle cx="'+b[0]+'" cy="'+b[1]+'" r="3.1" fill="#F7CDD2"/><circle cx="'+b[0]+'" cy="'+b[1]+'" r="1.3" fill="#F4C450"/>'; }
+  var le=document.getElementById('leaves'); if(le) le.innerHTML=lg;
+  var fg=''; for(var j=0;j<flw && j<FLOWER.length;j++){ var f=FLOWER[j]; fg+=flowerSVG(f[0],f[1],FCOL[j%FCOL.length]); }
+  var fe=document.getElementById('flowers'); if(fe) fe.innerHTML=fg;
+  var cap=document.getElementById('meadow-cap');
+  if(cap) cap.textContent=(bloss===0 && flw===0) ? '完成今天的操練，讓小樹開出第一朵花 🌱' : '🌿 你們正一起，讓這片牧場更繽紛';
+}
+
+/* ---------- 好習慣集點 ---------- */
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function getHabits(){ return Store.get('habits',[]); }
+function getDoneToday(){ const log=Store.get('habitLog',{}); const a=log[todayKey()]; return Array.isArray(a)?a:[]; }
+let _lastToggled=null;
+function toggleHabit(id){
+  const log=Store.get('habitLog',{}); const k=todayKey();
+  const arr=Array.isArray(log[k])?log[k].slice():[];
+  const i=arr.indexOf(id); let added=false;
+  if(i>=0) arr.splice(i,1); else { arr.push(id); added=true; }
+  log[k]=arr; Store.set('habitLog',log);
+  _lastToggled = added ? id : null;
+  if(added && navigator.vibrate){ try{ navigator.vibrate(18); }catch(e){} }
+  renderHabits(); renderKidsHabits(); renderMeadow(); renderRecap();
+}
+function renderHabits(){
+  const list=document.getElementById('habit-list'); if(!list) return;
+  const habits=getHabits(), done=getDoneToday();
+  const prog=document.getElementById('habit-progress');
+  if(habits.length===0){
+    list.innerHTML='<div class="habit-empty">還沒有好習慣，點右上「管理」加入第一個吧 🌱</div>';
+    if(prog) prog.textContent=''; renderWeek(); return;
+  }
+  list.innerHTML=habits.map(h=>{
+    const on=done.indexOf(h.id)>=0;
+    return '<div class="habit-row'+(on?' done':'')+'" data-id="'+h.id+'">'
+      +'<span class="habit-emoji">'+h.emoji+'</span>'
+      +'<span class="habit-name">'+escapeHtml(h.name)+'</span>'
+      +'<button class="habit-check'+(on?' on':'')+'" aria-label="完成">'+(on?'★':'')+'</button></div>';
+  }).join('');
+  list.querySelectorAll('.habit-row').forEach(row=>{
+    row.querySelector('.habit-check').addEventListener('click',()=>toggleHabit(row.dataset.id));
+  });
+  if(_lastToggled){ const r=list.querySelector('.habit-row[data-id="'+_lastToggled+'"]');
+    if(r) r.querySelector('.habit-check').classList.add('pop'); _lastToggled=null; }
+  const n=habits.length, c=habits.filter(h=>done.indexOf(h.id)>=0).length;
+  if(prog) prog.innerHTML='完成 <b>'+c+'</b> / '+n+'　⭐ 今天 '+c+' 顆'+(n>0&&c===n?'　🎉 全部完成！':'');
+  renderWeek();
+}
+function renderWeek(){
+  const wrap=document.getElementById('habit-week'); if(!wrap) return;
+  const log=Store.get('habitLog',{}); const WD=['日','一','二','三','四','五','六'];
+  const today=new Date(); let html='';
+  for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i);
+    const k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const a=log[k]; const c=Array.isArray(a)?a.length:0;
+    html+='<div class="wk'+(i===0?' today':'')+'"><div class="wd">'+WD[d.getDay()]+'</div>'
+      +'<div class="wdot'+(c>0?' has':'')+'">'+(c>0?c:'')+'</div></div>';
+  }
+  wrap.innerHTML=html;
+}
+function renderKidsHabits(){
+  const wrap=document.getElementById('kids-habit-list'); if(!wrap) return;
+  const habits=getHabits(), done=getDoneToday();
+  if(habits.length===0){ wrap.innerHTML='<p style="text-align:center;color:#b07d2e;font-size:16px;">請爸爸媽媽先加入好習慣喔 🌱</p>'; return; }
+  wrap.innerHTML=habits.map(h=>{ const on=done.indexOf(h.id)>=0;
+    return '<button class="k-habit'+(on?' done':'')+'" data-id="'+h.id+'"><span class="ke">'+h.emoji+'</span><span class="kn">'+escapeHtml(h.name)+'</span><span class="k-star">★</span></button>';
+  }).join('');
+  wrap.querySelectorAll('.k-habit').forEach(b=>b.addEventListener('click',()=>toggleHabit(b.dataset.id)));
+}
+/* 管理習慣 */
+const EMOJIS=['🦷','🧸','🙏','📖','🥗','🛏️','🙇','🤗','💧','🍎','🧹','😴','👟','🧼','🎨','⚽'];
+let pickedEmoji=EMOJIS[0];
+const habitMask=document.getElementById('habit-mask');
+function renderEmojiPick(){
+  const w=document.getElementById('emoji-pick'); if(!w) return;
+  w.innerHTML=EMOJIS.map(e=>'<button class="emoji-opt'+(e===pickedEmoji?' on':'')+'" data-e="'+e+'">'+e+'</button>').join('');
+  w.querySelectorAll('.emoji-opt').forEach(b=>b.addEventListener('click',()=>{ pickedEmoji=b.dataset.e; renderEmojiPick(); }));
+}
+function renderHabitEditor(){
+  const wrap=document.getElementById('habit-edit-list'); if(!wrap) return;
+  const habits=getHabits();
+  wrap.innerHTML = habits.length
+    ? habits.map(h=>'<div class="hedit-row" data-id="'+h.id+'"><span class="habit-emoji">'+h.emoji+'</span><span class="habit-name">'+escapeHtml(h.name)+'</span><button class="hedit-del" aria-label="刪除">✕</button></div>').join('')
+    : '<p class="page-sub">還沒有習慣，從下面加入。</p>';
+  wrap.querySelectorAll('.hedit-del').forEach(btn=>btn.addEventListener('click',()=>{
+    const id=btn.closest('.hedit-row').dataset.id;
+    Store.set('habits', getHabits().filter(h=>h.id!==id));
+    renderHabitEditor(); renderHabits(); renderKidsHabits(); renderMeadow();
+  }));
+}
+document.getElementById('habit-edit-btn').addEventListener('click', ()=>{ pickedEmoji=EMOJIS[0]; renderHabitEditor(); renderEmojiPick(); habitMask.classList.add('open'); });
+document.getElementById('habit-close').addEventListener('click', ()=>habitMask.classList.remove('open'));
+habitMask.addEventListener('click', e=>{ if(e.target===habitMask) habitMask.classList.remove('open'); });
+document.getElementById('add-habit-btn').addEventListener('click', ()=>{
+  const inp=document.getElementById('new-habit-name'); const name=inp.value.trim();
+  if(!name){ toast('幫習慣取個名字'); return; }
+  const hs=getHabits(); if(hs.length>=8){ toast('最多 8 個習慣'); return; }
+  hs.push({ id:uid(), emoji:pickedEmoji, name }); Store.set('habits', hs);
+  inp.value=''; renderHabitEditor(); renderHabits(); renderKidsHabits(); renderMeadow();
+  toast('已加入 '+pickedEmoji+' '+name);
+});
+/* 孩子模式：好習慣面板 */
+document.getElementById('kb-habit').addEventListener('click', ()=>{ renderKidsHabits(); document.body.classList.add('kids-habits'); });
+document.getElementById('kids-habits-back').addEventListener('click', ()=>document.body.classList.remove('kids-habits'));
+
+/* ---------- 親子今日任務 ---------- */
+const TASKS=[
+  {i:'🙏',t:'一起禱告',d:'睡前牽著孩子的手，謝謝神今天的看顧，為他祝福一句話。'},
+  {i:'💛',t:'說感恩',d:'各自說出今天一件感謝的事，聽完給對方一個微笑。'},
+  {i:'🤗',t:'三個擁抱',d:'今天給孩子三個大大的擁抱，不為什麼，只因為愛他。'},
+  {i:'👂',t:'專心聽',d:'放下手機，聽孩子說三分鐘他最想說的事，不打斷、不糾正。'},
+  {i:'📖',t:'一個故事',d:'一起讀一個聖經小故事或繪本，讀完問他最喜歡哪裡。'},
+  {i:'🎵',t:'一起唱',d:'唱一首詩歌或孩子喜歡的歌，牽手或拍手都好。'},
+  {i:'🌟',t:'找優點',d:'今天具體稱讚孩子一件好行為，告訴他「我看見了」。'},
+  {i:'🖍️',t:'一起畫',d:'一起畫一張圖，主題是「我們的家」。'},
+  {i:'🚶',t:'散步五分鐘',d:'手牽手在家附近或室內走走，邊走邊聊今天發生的事。'},
+  {i:'🍽️',t:'一起做家事',d:'邀孩子幫一件小忙（擺碗筷、收衣服），完成後好好謝謝他。'},
+  {i:'😄',t:'大笑時刻',d:'玩一個會讓彼此大笑的小遊戲五分鐘。'},
+  {i:'🙇',t:'練習對不起',d:'示範並陪孩子練習說「對不起」與「沒關係」。'},
+  {i:'❤️',t:'我愛你',d:'看著孩子的眼睛，認真說「我愛你，因為你是你」。'},
+  {i:'🛏️',t:'安靜同在',d:'睡前安靜陪孩子躺三分鐘，輕拍他，不說話也好。'},
+  {i:'💅',t:'按摩小手',d:'幫孩子按摩小手或小腳一分鐘，邊做邊說愛他的話。'},
+  {i:'📸',t:'拍張合照',d:'今天和孩子拍一張開心的合照，記在成長日記裡。'},
+  {i:'🧩',t:'一起拼圖',d:'一起完成一個小拼圖或積木，享受合作的成就感。'},
+  {i:'🌿',t:'觀察大自然',d:'一起看看窗外的植物、雲或小鳥，聊聊神的創造。'},
+  {i:'🍪',t:'一起做點心',d:'一起準備一份簡單的點心，讓孩子參與每一步。'},
+  {i:'📝',t:'寫一句話',d:'幫孩子把今天說的一句童言童語記下來，留作紀念。'},
+  {i:'😊',t:'說心情',d:'各自說一個今天的心情，練習用語言表達感受。'},
+  {i:'🎁',t:'小驚喜',d:'為孩子準備一個小驚喜（紙條、一顆糖），讓他被愛包圍。'},
+  {i:'💪',t:'一起運動',d:'一起跳一跳、伸展或學動物走路，動一動笑一笑。'},
+  {i:'📚',t:'背一節經文',d:'用動作或唱的方式，和孩子一起記一句短短的經文。'},
+  {i:'👥',t:'說說朋友',d:'問問孩子今天和誰玩、發生什麼事，了解他的小世界。'},
+  {i:'🎨',t:'自由創作',d:'給孩子紙和筆，陪他畫他想畫的，不評論只欣賞。'},
+  {i:'🌙',t:'睡前感謝',d:'睡前一起數出三件今天值得感謝的事，再說晚安。'},
+  {i:'🤝',t:'一起服事',d:'一起為家人做一件貼心的事，例如倒水、收碗。'},
+  {i:'🐣',t:'學習等待',d:'玩一個需要輪流等待的小遊戲，溫柔陪他練習耐心。'},
+  {i:'☀️',t:'迎接新的一天',d:'早晨一起說「今天會是美好的一天」，為彼此禱告祝福。'}
+];
+function dayIndex(){ const d=new Date(); return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000); }
+function todayTaskIdx(){ const p=Store.get('taskPick',{}); const k=todayKey();
+  return (typeof p[k]==='number') ? (p[k]%TASKS.length) : (dayIndex()%TASKS.length); }
+function taskStreak(){ const log=Store.get('taskLog',{}); let n=0; const d=new Date();
+  for(;;){ const k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); if(log[k]){n++; d.setDate(d.getDate()-1);} else break; } return n; }
+function taskTotal(){ const log=Store.get('taskLog',{}); return Object.keys(log).filter(k=>log[k]).length; }
+function renderTask(){
+  const ti=document.getElementById('task-icon'); if(!ti) return;
+  const t=TASKS[todayTaskIdx()];
+  ti.textContent=t.i;
+  document.getElementById('task-title').textContent=t.t;
+  document.getElementById('task-desc').textContent=t.d;
+  const log=Store.get('taskLog',{}); const done=!!log[todayKey()];
+  const btn=document.getElementById('task-done-btn');
+  btn.textContent = done ? '今天已完成 ✓' : '今天一起完成了';
+  btn.classList.toggle('done', done);
+  const total=taskTotal(), s=taskStreak();
+  document.getElementById('task-stat').textContent = total>0
+    ? ('你們一起累積了 '+total+' 段親子時光'+(s>1?'　·　連續 '+s+' 天':''))
+    : '完成第一個任務，留下今天的親子時光 💛';
+  document.getElementById('task-hearts').textContent='💛'.repeat(Math.min(total,21));
+}
+function toggleTask(){
+  const log=Store.get('taskLog',{}); const k=todayKey();
+  if(log[k]) delete log[k]; else log[k]=true;
+  Store.set('taskLog',log); renderTask(); renderRecap();
+  if(log[k]){ if(navigator.vibrate){ try{navigator.vibrate(18);}catch(e){} } toast('又一段美好的親子時光 💛'); }
+}
+function shuffleTask(){
+  const p=Store.get('taskPick',{}); const k=todayKey();
+  p[k]=(todayTaskIdx()+1)%TASKS.length; Store.set('taskPick',p); renderTask();
+}
+document.getElementById('task-done-btn').addEventListener('click', toggleTask);
+document.getElementById('task-shuffle').addEventListener('click', shuffleTask);
+
+/* ---------- 深呼吸（通用）---------- */
+function startBreath(btn){
+  const box=btn.previousElementSibling;
+  if(!box || box.dataset.run==='1') return;
+  const circle=box.querySelector('.breath-circle'), text=box.querySelector('.breath-text');
+  box.dataset.run='1'; btn.textContent='深呼吸中…';
+  const seq=[['吸氣…',4000,1],['停一下',1200,1],['吐氣…',4000,.55],['停一下',1000,.55]];
+  let step=0, cycle=0; const maxC=3;
+  (function tick(){
+    if(cycle>=maxC){ box.dataset.run=''; if(text) text.textContent='做得很好 🌿'; if(circle) circle.style.transform='scale(.7)'; btn.textContent='再做一次'; return; }
+    const s=seq[step]; if(text) text.textContent=s[0];
+    if(circle){ circle.style.transition='transform '+(s[1]/1000)+'s ease-in-out'; circle.style.transform='scale('+s[2]+')'; }
+    step++; if(step>=seq.length){ step=0; cycle++; }
+    setTimeout(tick, s[1]);
+  })();
+}
+document.querySelectorAll('.breath-btn').forEach(b=>b.addEventListener('click',()=>startBreath(b)));
+
+/* ---------- 情緒小幫手 ---------- */
+const KID_MOODS=[{e:'😊',n:'開心'},{e:'😢',n:'難過'},{e:'😠',n:'生氣'},{e:'😨',n:'害怕'},{e:'😴',n:'想睡'},{e:'😰',n:'緊張'},{e:'🤗',n:'想抱抱'},{e:'😕',n:'不舒服'}];
+const MOOD_VERSE={'害怕':'「我懼怕的時候要倚靠你。」詩篇 56:3','緊張':'「應當一無掛慮，只要凡事藉著禱告、祈求，將你們所要的告訴神。」腓立比書 4:6','生氣':'「不輕易發怒的，勝過勇士。」箴言 16:32','難過':'「神要擦去他們一切的眼淚。」啟示錄 21:4'};
+const MOOD_VERSE_DEFAULT='「你們要將一切的憂慮卸給神，因為他顧念你們。」彼得前書 5:7';
+function moodOfToday(){ const s=Store.get('moodToday',{}); return (s.k===todayKey())?s:null; }
+function renderMoodGrid(){
+  const wrap=document.getElementById('mood-grid'); if(!wrap) return;
+  const cur=moodOfToday();
+  wrap.innerHTML=KID_MOODS.map(m=>'<button class="mood-face'+(cur&&cur.n===m.n?' on':'')+'" data-n="'+m.n+'" data-e="'+m.e+'"><span class="mf">'+m.e+'</span>'+m.n+'</button>').join('');
+  wrap.querySelectorAll('.mood-face').forEach(b=>b.addEventListener('click',()=>selectMood(b.dataset.n,b.dataset.e)));
+  updateMoodChildNote();
+}
+function selectMood(n,e){
+  Store.set('moodToday',{k:todayKey(),n:n,e:e});
+  renderMoodGrid();
+  const flow=document.getElementById('mood-flow'); flow.hidden=false;
+  document.getElementById('mood-flow-title').textContent='你現在覺得'+n+'，沒關係，我們一起：';
+  const steps=['我知道你現在覺得'+n+'，這是正常的。','我們一起慢慢深呼吸三次。','把它說出來：「我覺得'+n+'。」','想想看，什麼能讓你舒服一點？抱抱、喝口水，或休息一下。'];
+  document.getElementById('soothe').innerHTML=steps.map(s=>'<li>'+escapeHtml(s)+'</li>').join('');
+  document.getElementById('mood-verse').textContent=MOOD_VERSE[n]||MOOD_VERSE_DEFAULT;
+  flow.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function updateMoodChildNote(){
+  const note=document.getElementById('mood-child-note'); if(!note) return;
+  const cur=moodOfToday();
+  note.textContent=cur?('孩子今天選的心情：'+cur.e+' '+cur.n):'';
+}
+document.getElementById('mood-seg').addEventListener('click',e=>{ const b=e.target.closest('.seg-btn'); if(!b) return;
+  document.querySelectorAll('#mood-seg .seg-btn').forEach(x=>x.classList.toggle('active',x===b));
+  const v=b.dataset.mood;
+  document.getElementById('mood-kid').hidden=(v!=='kid');
+  document.getElementById('mood-parent').hidden=(v!=='parent');
+  if(v==='parent') updateMoodChildNote();
+});
+function renderKidsMood(){
+  const wrap=document.getElementById('kids-mood-grid'); if(!wrap) return;
+  wrap.innerHTML=KID_MOODS.map(m=>'<button class="mood-face" data-n="'+m.n+'" data-e="'+m.e+'"><span class="mf">'+m.e+'</span>'+m.n+'</button>').join('');
+  document.getElementById('kids-breath').hidden=true;
+  wrap.querySelectorAll('.mood-face').forEach(b=>b.addEventListener('click',()=>{
+    Store.set('moodToday',{k:todayKey(),n:b.dataset.n,e:b.dataset.e});
+    wrap.querySelectorAll('.mood-face').forEach(x=>x.classList.toggle('on',x===b));
+    const kb=document.getElementById('kids-breath'); kb.hidden=false;
+    document.getElementById('kids-breath-title').textContent='你覺得'+b.dataset.n+'，我們一起深呼吸';
+    renderMoodGrid();
+  }));
+}
+
+/* ---------- 正向管教錦囊 ---------- */
+const TIPS=[
+  {i:'😤',t:'耍賴、盧、討東西',calm:'他在學習表達需要，不是針對你。',steps:['蹲下平視，先說出他的感受：「你很想要對嗎？」','溫柔而堅定地說明界線：「今天不買，這是我們的約定。」','給選擇而非命令：「你想自己走，還是牽著手走？」'],verse:'「回答柔和，使怒消退。」箴言 15:1',avoid:'避免：用吼叫或威脅壓制，也避免心軟破壞已定的界線。'},
+  {i:'✋',t:'打人、推人',calm:'先深呼吸，他需要的是引導，不是以暴制暴。',steps:['立刻溫和制止並握住他的手：「手是用來幫忙，不是打人。」','說出底線：「打人會痛，我們不可以打人。」','引導用語言：「下次生氣可以說『我很生氣』。」'],verse:'「不可含怒到日落。」以弗所書 4:26',avoid:'避免：打回去或以體罰回應，那會教他用暴力解決。'},
+  {i:'🧸',t:'不收拾玩具',calm:'收拾對小小孩是大工程，需要陪伴與步驟。',steps:['一起做、分小步：「我們先收積木，再收車車。」','把它變遊戲：「看誰先把小熊送回家！」','完成後具體稱讚：「你把玩具都送回家了，真棒。」'],verse:'「凡事都要規規矩矩地按著次序行。」哥林多前書 14:40',avoid:'避免：嘮叨或代勞到底，孩子學不到負責。'},
+  {i:'🛁',t:'不肯刷牙、洗澡、睡覺',calm:'轉換活動對孩子不容易，預告能減少抗拒。',steps:['提前預告：「再玩五分鐘，我們就去刷牙囉。」','給予掌控感：「你想先刷上排還是下排？」','用固定的睡前儀式：故事、禱告、關燈。'],verse:'「我必安然躺下睡覺，因為獨有你使我安然居住。」詩篇 4:8',avoid:'避免：臨時命令、威脅，或睡前看刺激的螢幕。'},
+  {i:'😭',t:'公共場合哭鬧',calm:'先顧孩子，不必在意旁人眼光。',steps:['蹲下、抱住他，先讓情緒緩下來。','低聲同理：「我知道你很難過，我在這裡。」','帶離現場到安靜角落，等他平靜再說。'],verse:'「他必像牧人牧養自己的羊群，將羊羔抱在懷中。」以賽亞書 40:11',avoid:'避免：為了面子大聲斥責或用糖果交換安靜。'},
+  {i:'🤝',t:'搶玩具、不分享',calm:'六歲正在學習輪流，分享是慢慢練成的。',steps:['先承認他的擁有權：「這是你的，你可以決定。」','示範輪流：「我們用數到十輪流玩好嗎？」','分享時立刻肯定：「你願意分享，朋友好開心。」'],verse:'「施比受更為有福。」使徒行傳 20:35',avoid:'避免：強迫立刻交出，或羞辱「你怎麼這麼小氣」。'},
+  {i:'🤥',t:'說謊',calm:'孩子說謊常是怕被罵，先別急著定罪。',steps:['營造安全感：「說實話不會被處罰，我會謝謝你誠實。」','分開行為與人：「這件事做錯了，但你是好孩子。」','肯定誠實：「你願意說實話，很勇敢。」'],verse:'「所以你們要棄絕謊言，各人與鄰舍說實話。」以弗所書 4:25',avoid:'避免：嚴厲逼問或貼上「騙子」標籤。'},
+  {i:'🙅',t:'頂嘴、說「不要」',calm:'這是自我發展的訊號，不是針對你的不敬。',steps:['保持平靜，不被激怒：先深呼吸。','給有限選擇：「你可以現在做或五分鐘後做。」','溫柔堅定重述界線，不爭辯、不被牽著走。'],verse:'「你們作兒女的，要在主裡聽從父母。」以弗所書 6:1',avoid:'避免：用權威硬壓或跟孩子鬥氣。'}
+];
+function renderTips(){
+  const wrap=document.getElementById('tips-list'); if(!wrap) return;
+  wrap.innerHTML=TIPS.map(t=>'<div class="tip">'
+    +'<button class="tip-head"><span class="ti">'+t.i+'</span>'+t.t+'<span class="chev">▾</span></button>'
+    +'<div class="tip-body"><div class="tip-calm">先穩住自己：'+t.calm+'</div>'
+    +'<ol class="tip-steps">'+t.steps.map(s=>'<li>'+s+'</li>').join('')+'</ol>'
+    +'<div class="tip-verse">'+t.verse+'</div>'
+    +'<div class="tip-avoid">'+t.avoid+'</div></div></div>').join('');
+  wrap.querySelectorAll('.tip-head').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+}
+
+/* ---------- 成長日記 ---------- */
+let pendingPhotoBlob=null;
+const _photoUrls=[];
+async function delPhoto(id){ const db=await Media.open(); if(!db) return; try{ const tx=db.transaction('photos','readwrite'); tx.objectStore('photos').delete(id); }catch(e){} }
+document.getElementById('diary-photo-btn').addEventListener('click',()=>document.getElementById('diary-photo-input').click());
+document.getElementById('diary-photo-input').addEventListener('change',async e=>{
+  const f=e.target.files[0]; if(!f){ return; }
+  toast('處理照片中…');
+  pendingPhotoBlob=await compressImage(f);
+  document.getElementById('diary-photo-name').textContent='已選好照片 ✓';
+  e.target.value='';
+});
+document.getElementById('diary-save').addEventListener('click', async ()=>{
+  const ta=document.getElementById('diary-text'); const text=ta.value.trim();
+  if(!text && !pendingPhotoBlob){ toast('寫點什麼，或加一張照片'); return; }
+  const id=uid(); let photoId=null;
+  if(pendingPhotoBlob){ photoId='d'+id; const ok=await Media.put(photoId, pendingPhotoBlob); if(!ok){ toast('照片儲存失敗，空間可能已滿'); photoId=null; } }
+  const list=Store.get('diary',[]); list.unshift({id:id,text:text,ts:Date.now(),photoId:photoId});
+  Store.set('diary',list);
+  ta.value=''; pendingPhotoBlob=null; document.getElementById('diary-photo-name').textContent='';
+  renderDiary(); renderKidsAlbum();
+  toast('已記下今天 💛');
+});
+function renderDiary(){
+  const wrap=document.getElementById('diary-list'); if(!wrap) return;
+  _photoUrls.forEach(u=>URL.revokeObjectURL(u)); _photoUrls.length=0;
+  const list=Store.get('diary',[]);
+  if(list.length===0){ wrap.innerHTML='<div class="diary-empty">還沒有日記，從上面記下第一篇吧 🌱</div>'; return; }
+  wrap.innerHTML=list.map(en=>{
+    const d=new Date(en.ts); const ds=d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate();
+    return '<div class="diary-entry" data-id="'+en.id+'"><button class="de-del" aria-label="刪除">刪除</button>'
+      +'<div class="de-date">'+ds+'</div>'
+      +(en.text?'<div class="de-text">'+escapeHtml(en.text)+'</div>':'')
+      +(en.photoId?'<img data-photo="'+en.photoId+'" alt="成長照片">':'')+'</div>';
+  }).join('');
+  wrap.querySelectorAll('img[data-photo]').forEach(img=>{ Media.get(img.dataset.photo).then(blob=>{ if(blob){ const u=URL.createObjectURL(blob); _photoUrls.push(u); img.src=u; } else img.remove(); }); });
+  wrap.querySelectorAll('.de-del').forEach(btn=>btn.addEventListener('click',()=>{
+    const id=btn.closest('.diary-entry').dataset.id;
+    const arr=Store.get('diary',[]); const en=arr.find(x=>x.id===id);
+    Store.set('diary', arr.filter(x=>x.id!==id));
+    if(en && en.photoId) delPhoto(en.photoId);
+    renderDiary(); renderKidsAlbum();
+  }));
+}
+
+/* ---------- 里程碑 ---------- */
+const MILESTONES=[
+  {id:'m_brush',e:'🦷',n:'第一次自己刷牙'},{id:'m_sleep',e:'🛏️',n:'第一次自己睡過夜'},
+  {id:'m_shoes',e:'👟',n:'學會自己穿鞋'},{id:'m_verse',e:'📖',n:'背會第一節經文'},
+  {id:'m_share',e:'🤝',n:'第一次主動分享'},{id:'m_name',e:'✍️',n:'寫出自己的名字'},
+  {id:'m_pray',e:'🙏',n:'第一次自己禱告'},{id:'m_help',e:'🧹',n:'第一次主動幫忙做家事'},
+  {id:'m_school',e:'🎒',n:'第一天上學'},{id:'m_bike',e:'🚲',n:'第一次騎腳踏車'}
+];
+function renderMiles(){
+  const wrap=document.getElementById('mile-list'); if(!wrap) return;
+  const done=Store.get('milestones',{});
+  wrap.innerHTML=MILESTONES.map(m=>{ const dt=done[m.id];
+    return '<button class="mile'+(dt?' done':'')+'" data-id="'+m.id+'"><span class="me">'+m.e+'</span>'
+      +'<span class="mn">'+m.n+(dt?'<span class="mdate">達成於 '+dt+'</span>':'')+'</span>'
+      +'<span class="mcheck">'+(dt?'✓':'')+'</span></button>';
+  }).join('');
+  wrap.querySelectorAll('.mile').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.id; const d=Store.get('milestones',{});
+    if(d[id]) delete d[id];
+    else { const n=new Date(); d[id]=n.getFullYear()+'/'+(n.getMonth()+1)+'/'+n.getDate(); if(navigator.vibrate){try{navigator.vibrate(18);}catch(e){}} }
+    Store.set('milestones',d); renderMiles(); renderRecap();
+  }));
+}
+
+/* ---------- 成長頁分段切換 ---------- */
+document.getElementById('grow-seg').addEventListener('click',e=>{ const b=e.target.closest('.seg-btn'); if(!b) return;
+  document.querySelectorAll('#grow-seg .seg-btn').forEach(x=>x.classList.toggle('active',x===b));
+  const v=b.dataset.grow;
+  document.getElementById('grow-diary').hidden=(v!=='diary');
+  document.getElementById('grow-mile').hidden=(v!=='mile');
+});
+
+/* ---------- 孩子模式：心情 / 相簿 ---------- */
+function renderKidsAlbum(){
+  const wrap=document.getElementById('kids-gallery'); if(!wrap) return;
+  const list=Store.get('diary',[]).filter(en=>en.photoId);
+  if(list.length===0){ wrap.innerHTML='<div class="empty">還沒有照片，請爸爸媽媽幫你拍一張吧 📸</div>'; return; }
+  wrap.innerHTML=list.map(en=>'<img data-photo="'+en.photoId+'" alt="照片">').join('');
+  wrap.querySelectorAll('img[data-photo]').forEach(img=>{ Media.get(img.dataset.photo).then(blob=>{ if(blob){ const u=URL.createObjectURL(blob); _photoUrls.push(u); img.src=u; } else img.remove(); }); });
+}
+document.getElementById('kb-mood').addEventListener('click',()=>{ renderKidsMood(); document.body.classList.add('kids-mood'); });
+document.getElementById('kb-album').addEventListener('click',()=>{ renderKidsAlbum(); document.body.classList.add('kids-album'); });
+document.getElementById('kids-mood-back').addEventListener('click',()=>document.body.classList.remove('kids-mood'));
+document.getElementById('kids-album-back').addEventListener('click',()=>document.body.classList.remove('kids-album'));
+
+/* ---------- 4. 介面狀態 ---------- */
+let profile = Store.get('profile', { name:'', birthYear:null, birthMonth:null, onboarded:false, version:DATA_VERSION });
+
+function applyName(){
+  const n = profile.name && profile.name.trim() ? profile.name.trim() : '寶貝';
+  document.getElementById('hi-name').textContent = n;
+  document.getElementById('kids-hi').textContent = '嗨，'+n+'！';
+  document.getElementById('set-name').value = profile.name || '';
+}
+
+/* ---------- 5. 分頁切換 ---------- */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+id));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.page===id));
+  document.querySelector('main').scrollTo({top:0});
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>showPage(tab.dataset.page));
+});
+document.getElementById('practice-btn').addEventListener('click', ()=>{
+  const log=Store.get('practiceLog',{}); const k=todayKey();
+  if(log[k]) delete log[k]; else log[k]=true;
+  Store.set('practiceLog', log);
+  renderPractice(); renderRecap();
+  if(log[k]) toast('願主的果子在你裡面成長 🌿');
+});
+
+/* ---------- 6. 設定彈窗 ---------- */
+const mask = document.getElementById('settings-mask');
+const NOW_Y = new Date().getFullYear();
+// 共用：填入年/月下拉選單
+function fillBirthSelects(yEl, mEl, selY, selM){
+  let yo='<option value="">年</option>';
+  for(let y=NOW_Y; y>=NOW_Y-15; y--) yo+='<option value="'+y+'"'+(String(selY)===String(y)?' selected':'')+'>'+y+'</option>';
+  yEl.innerHTML=yo;
+  let mo='<option value="">月</option>';
+  for(let m=1;m<=12;m++) mo+='<option value="'+m+'"'+(String(selM)===String(m)?' selected':'')+'>'+m+'月</option>';
+  mEl.innerHTML=mo;
+}
+function openSettings(){
+  document.getElementById('set-name').value = profile.name||'';
+  fillBirthSelects(document.getElementById('set-year'), document.getElementById('set-month'), profile.birthYear, profile.birthMonth);
+  renderBackupInfo();
+  mask.classList.add('open');
+}
+function closeSettings(){ mask.classList.remove('open'); }
+document.getElementById('btn-settings').addEventListener('click', openSettings);
+document.getElementById('set-close').addEventListener('click', closeSettings);
+mask.addEventListener('click', e=>{ if(e.target===mask) closeSettings(); });
+
+document.getElementById('set-save').addEventListener('click', ()=>{
+  profile.name = document.getElementById('set-name').value.trim();
+  const y=document.getElementById('set-year').value, m=document.getElementById('set-month').value;
+  profile.birthYear = y? Number(y):null;
+  profile.birthMonth = m? Number(m):null;
+  Store.set('profile', profile);
+  applyName();
+  toast('已儲存 ✓');
+  closeSettings();
+});
+
+/* ---------- 7. 孩子模式切換（持久化 + 長按離開）---------- */
+function enterKids(){ document.body.classList.add('kids'); document.body.classList.remove('kids-habits','kids-mood','kids-album'); Store.set('mode','kids'); closeSettings(); window.scrollTo({top:0}); }
+function exitKids(){ document.body.classList.remove('kids','kids-habits','kids-mood','kids-album'); Store.set('mode','parent'); }
+document.getElementById('btn-kids').addEventListener('click', enterKids);
+document.getElementById('set-kids').addEventListener('click', enterKids);
+
+// 家長鎖：長按 1.5 秒才離開，孩子不易誤觸
+const exitBtn = document.getElementById('kids-exit');
+let holdTimer = null;
+function startHold(e){
+  if(e) e.preventDefault();
+  exitBtn.classList.add('holding');
+  holdTimer = setTimeout(()=>{ holdTimer=null; exitBtn.classList.remove('holding'); exitKids(); }, 1500);
+}
+function cancelHold(early){
+  exitBtn.classList.remove('holding');
+  if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; if(early) toast('長按 1.5 秒才能離開喔'); }
+}
+exitBtn.addEventListener('pointerdown', startHold);
+exitBtn.addEventListener('pointerup', ()=>cancelHold(true));
+exitBtn.addEventListener('pointerleave', ()=>cancelHold(false));
+exitBtn.addEventListener('pointercancel', ()=>cancelHold(false));
+exitBtn.addEventListener('contextmenu', e=>e.preventDefault());
+
+/* ---------- 8. 備份匯出 / 匯入（含照片）---------- */
+async function doExport(){
+  toast('正在打包備份…');
+  // 把 IndexedDB 照片轉成 base64 一起帶走
+  const raw = await Media.getAll();
+  const photos = [];
+  for(const p of raw){
+    if(p && p.blob){ const d = await blobToDataURL(p.blob); if(d) photos.push({ id:p.id, t:p.t||Date.now(), data:d }); }
+  }
+  const payload = { app:'321親子同行', version:DATA_VERSION, exportedAt:new Date().toISOString(), data:Store.dump(), photos };
+  const blob = new Blob([JSON.stringify(payload)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = '321親子同行-備份-'+stamp+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  Store.set('lastBackup', Date.now());
+  renderBackupNudge(); renderBackupInfo();
+  toast(photos.length ? ('備份已下載（含 '+photos.length+' 張照片）') : '備份已下載');
+}
+document.getElementById('set-export').addEventListener('click', doExport);
+document.getElementById('set-import').addEventListener('click', ()=>document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = async ()=>{
+    try{
+      const obj = JSON.parse(r.result);
+      if(obj && obj.data){
+        Store.load(obj.data);
+        if(Array.isArray(obj.photos)){
+          for(const p of obj.photos){ const b=dataURLtoBlob(p.data); if(b) await Media.put(p.id, b); }
+        }
+        profile = Store.get('profile', profile);
+        applyName(); renderPractice(); renderHabits(); renderKidsHabits(); renderTask();
+        renderMoodGrid(); renderDiary(); renderMiles(); renderBackupNudge(); renderRecap();
+        toast('還原成功 ✓'); closeSettings();
+      } else toast('檔案格式不正確');
+    }catch(err){ toast('讀取失敗，請確認檔案'); }
+    e.target.value='';
+  };
+  r.readAsText(f);
+});
+
+/* ---------- 8b. 備份提醒（保護家庭資料）---------- */
+function hasData(){
+  return Store.get('habits',[]).length>0 || Store.get('diary',[]).length>0
+    || Object.keys(Store.get('habitLog',{})).length>0
+    || Object.keys(Store.get('milestones',{})).length>0
+    || Object.keys(Store.get('taskLog',{})).length>0
+    || Object.keys(Store.get('practiceLog',{})).length>0;
+}
+function renderBackupNudge(){
+  const el=document.getElementById('backup-nudge'); if(!el) return;
+  if(Store.get('backupSnooze','')===todayKey() || !hasData()){ el.hidden=true; return; }
+  const last=Store.get('lastBackup',0);
+  const days = last ? Math.floor((Date.now()-last)/86400000) : null;
+  if(last && days<10){ el.hidden=true; return; }
+  document.getElementById('backup-nudge-text').textContent =
+    last ? ('已 '+days+' 天沒備份了，匯出一份保護孩子的成長記錄') : '還沒備份過，建議先匯出一份保平安';
+  el.hidden=false;
+}
+function renderBackupInfo(){
+  const el=document.getElementById('backup-info'); if(!el) return;
+  const last=Store.get('lastBackup',0);
+  el.textContent = last ? ('上次備份：'+new Date(last).toLocaleDateString()) : '尚未備份過';
+}
+document.getElementById('backup-nudge-go').addEventListener('click', doExport);
+document.getElementById('backup-nudge-x').addEventListener('click', ()=>{
+  Store.set('backupSnooze', todayKey()); document.getElementById('backup-nudge').hidden=true;
+});
+
+/* ---------- 本週回顧 ---------- */
+const RECAP_REFLECT=[
+  '先生命、再關係——你這週的每個選擇，都在小羊心裡種下種子。',
+  '改變從我開始。爸媽先操練無己，孩子就看見基督的樣式。',
+  '焦點在耶穌，不在表現。完成幾項不是重點，同在才是。',
+  '謙卑帶動謙卑。你蹲下來的每一次，都在教孩子溫柔。',
+  '孩子是你的「2」。陪伴他，就是在結聖靈的果子。',
+  '凡事謝恩。把這一週的點滴，都化作向神的感謝。',
+  '慢慢來，神在工作。不是靠勢力、不是靠才能，乃是靠神的靈。'
+];
+function weekKeys(){
+  const out=[]; const today=new Date(); const dow=today.getDay();
+  for(let i=dow;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i);
+    out.push({dk:d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(), md:d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()}); }
+  return out;
+}
+function renderRecap(){
+  const card=document.getElementById('recap-card'); if(!card) return;
+  const wk=weekKeys();
+  const hlog=Store.get('habitLog',{}), plog=Store.get('practiceLog',{}), tlog=Store.get('taskLog',{}), miles=Store.get('milestones',{});
+  let habits=0, prac=0, tasks=0;
+  wk.forEach(d=>{ const a=hlog[d.dk]; habits+=Array.isArray(a)?a.length:0; if(plog[d.dk]) prac++; if(tlog[d.dk]) tasks++; });
+  const mdset={}; wk.forEach(d=>{ mdset[d.md]=1; });
+  let ms=0; Object.keys(miles).forEach(k=>{ if(mdset[miles[k]]) ms++; });
+  if(habits+prac+tasks+ms===0){ card.hidden=true; return; }
+  card.hidden=false;
+  function stat(n,l){ return '<div class="recap-stat"><b>'+n+'</b><span>'+l+'</span></div>'; }
+  document.getElementById('recap-stats').innerHTML=stat(habits,'好習慣')+stat(prac,'爸媽操練')+stat(tasks,'親子時光')+stat(ms,'里程碑');
+  const wn=Math.floor(Date.now()/(7*86400000));
+  document.getElementById('recap-reflect').textContent=RECAP_REFLECT[wn % RECAP_REFLECT.length];
+}
+
+/* ---------- 9. 小提示 ---------- */
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 1800);
+}
+
+/* ---------- 10. PWA：註冊 Service Worker（離線/可安裝/可更新）---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+
+/* ---------- 11. 首次歡迎設定 ---------- */
+const STARTER_HABITS = [
+  {emoji:'🦷',name:'刷牙洗臉'},{emoji:'🧸',name:'收拾玩具'},{emoji:'🙏',name:'睡前禱告'},
+  {emoji:'📖',name:'讀經/聽聖經故事'},{emoji:'🥗',name:'好好吃飯'},{emoji:'🛏️',name:'自己穿衣'},
+  {emoji:'🙇',name:'說請、謝謝、對不起'},{emoji:'🤗',name:'抱抱家人'}
+];
+const obSel = new Set([0,1,2]);   // 預設勾選前三個
+function uid(){ return 'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function renderObChips(){
+  const wrap=document.getElementById('ob-chips'); wrap.innerHTML='';
+  STARTER_HABITS.forEach((h,i)=>{
+    const b=document.createElement('button');
+    b.className='ob-chip'+(obSel.has(i)?' on':'');
+    b.innerHTML='<span>'+h.emoji+'</span>'+h.name;
+    b.addEventListener('click',()=>{ obSel.has(i)?obSel.delete(i):obSel.add(i); renderObChips(); });
+    wrap.appendChild(b);
+  });
+}
+function openOnboarding(){
+  document.getElementById('ob-name').value='';
+  fillBirthSelects(document.getElementById('ob-year'), document.getElementById('ob-month'), NOW_Y-6, '');
+  renderObChips();
+  document.getElementById('onboard').classList.add('open');
+}
+document.getElementById('ob-start').addEventListener('click', ()=>{
+  profile.name = document.getElementById('ob-name').value.trim();
+  const y=document.getElementById('ob-year').value, m=document.getElementById('ob-month').value;
+  profile.birthYear = y? Number(y):null;
+  profile.birthMonth = m? Number(m):null;
+  profile.onboarded = true;
+  Store.set('profile', profile);
+  // 存下初選的好習慣，供第 2 步使用
+  const habits = [...obSel].map(i=>({ id:uid(), emoji:STARTER_HABITS[i].emoji, name:STARTER_HABITS[i].name }));
+  Store.set('habits', habits);
+  document.getElementById('onboard').classList.remove('open');
+  applyName(); renderPractice(); renderHabits(); renderKidsHabits(); renderTask();
+  toast('開始同行吧 🌿');
+});
+
+/* ---------- 12. 啟動 ---------- */
+(async function init(){
+  await hydrate();                    // 先從 IndexedDB 救回／同步資料
+  migrate();                          // 資料版本遷移，保護舊資料
+  profile = Store.get('profile', profile);
+  const v = todayVerse();
+  document.getElementById('verse-text').textContent = '「'+v.t+'」';
+  document.getElementById('verse-ref').textContent = v.r;
+  applyName();
+  renderPractice();
+  renderHabits(); renderKidsHabits();
+  renderTask();
+  renderMoodGrid(); renderTips(); renderDiary(); renderMiles();
+  renderRecap(); renderBackupNudge();
+  showPage('today');
+  if(!profile.onboarded){ openOnboarding(); }       // 第一次：歡迎設定
+  else if(Store.get('mode')==='kids'){ enterKids(); } // 記住孩子模式
+})();
+</script>
+</body>
+</html>
