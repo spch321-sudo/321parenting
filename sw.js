@@ -1,7 +1,7 @@
 /* 321 親子同行 — Service Worker
    作用：離線可用、可安裝、版本更新。
    更新方式：改了 App 內容後，把下面的版本號 +1 即可讓使用者拿到新版。 */
-const CACHE = 'sap-cache-v4';
+const CACHE = 'sap-cache-v5-gx1103';
 const ASSETS = [
   './',
   './index.html',
@@ -9,7 +9,9 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './coread.js?v=4',
-  './peerjs.min.js?v=4'
+  './peerjs.min.js?v=4',
+  './gxr.js?v=gx1103',
+  './gxa.js?v=gx1103'
 ];
 
 // 安裝：預先快取 App 外殼
@@ -24,7 +26,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.indexOf('sap-cache') === 0 && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
