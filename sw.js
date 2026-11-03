@@ -5,10 +5,10 @@
      clients.claim，通知所有頁面；背景中的舊頁面直接帶到新版
    ‧ fetch：HTML／JS／JSON／CSS 網路優先（no-cache），離線才用快取；圖片等快取優先；
      version.json 永遠 no-store；影音與 Range 請求不攔截；範圍外（其他 App）與跨網域不碰 */
-var VER = 'v6-up1103';
+var VER = 'v6-up1103-xz1103';
 var PFX = 'par321-';
 var V = PFX + VER;
-var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./coread.js?v=4", "./peerjs.min.js?v=4", "./gxr.js?v=gx1103", "./gxa.js?v=gx1103", "./upd321.js"];
+var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./coread.js?v=4", "./peerjs.min.js?v=4", "./gxr.js?v=gx1103", "./xz2.js?v=xz1103", "./gxa.js?v=gx1103-xz1103", "./upd321.js"];
 var HOME = 'index.html';
 
 function mine(k) { return k.indexOf(PFX) === 0 || k.indexOf("sap-cache-v5-gx1103") === 0; }

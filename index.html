@@ -1721,6 +1721,7 @@ window.GXR_CFG = {
   css: 'body.kids .gxr-btns,body.kids .gxr-fab{display:none!important}header.topbar .brand-txt{min-width:0;flex:1 1 auto;overflow:hidden}header.topbar .brand-txt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}header.topbar .brand-txt span{display:none}header.topbar .right{gap:4px}header.topbar .right .icon-btn{width:36px;height:36px}header.topbar .gxr-btns{gap:4px}'
 };
 window.GXA_CFG = {
+  xzSet: { sel: '#settings-mask .sheet', before: '#set-save' },
   name: '321親子同行', nameEn: '321 Parenting Together', slug: 'parenting',
   lang: function () { return 'zh'; },
   lessons: function () {
@@ -1749,10 +1750,11 @@ window.GXA_CFG = {
 };
 </script>
 <script src="gxr.js?v=gx1103"></script>
-<script src="gxa.js?v=gx1103"></script>
+<script src="xz2.js?v=xz1103"></script>
+<script src="gxa.js?v=gx1103-xz1103"></script>
 <script src="coread.js?v=4"></script>
-<script>var APPVER="v6-up1103";window.UPD321_VER=APPVER;window.UPD321_PFX=["par321-", "sap-cache-v5-gx1103"];</script>
-<script src="upd321.js?v=v6-up1103"></script>
+<script>var APPVER="v6-up1103-xz1103";window.UPD321_VER=APPVER;window.UPD321_PFX=["par321-", "sap-cache-v5-gx1103"];</script>
+<script src="upd321.js?v=v6-up1103-xz1103"></script>
 <script>try{UPD321.mount(document.querySelector("#settings-mask .sheet"),document.getElementById("set-close"));}catch(e){}</script>
 </body>
 </html>
